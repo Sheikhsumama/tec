@@ -254,12 +254,26 @@ function transition(toId,after){
 }
 
 /* Narration: browser voice stand-in until recorded voice exists */
-function speak(text){
-  if(!("speechSynthesis" in window))return;
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.rate=.9;u.pitch=1.15;u.lang="en-GB";
-  speechSynthesis.speak(u);
+/* Anis's voice: ElevenLabs through our own /api/speak (key stays on the server).
+   Falls back to the browser voice if the service isn't set up yet. */
+let anisAudio=null;
+async function speak(text){
+  if(anisAudio){anisAudio.pause();anisAudio=null}
+  if("speechSynthesis" in window)speechSynthesis.cancel();
+  try{
+    const r=await fetch("/api/speak",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});
+    if(!r.ok)throw new Error(r.status);
+    const url=URL.createObjectURL(await r.blob());
+    anisAudio=new Audio(url);
+    anisAudio.onended=()=>URL.revokeObjectURL(url);
+    await anisAudio.play();
+    return;
+  }catch(e){
+    if(!("speechSynthesis" in window))return;
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=.9;u.pitch=1.15;u.lang="en-GB";
+    speechSynthesis.speak(u);
+  }
 }
 /* Typewriter text + narration; a live-region keeps it readable for screen readers */
 let sayToken=0;
