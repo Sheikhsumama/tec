@@ -2,513 +2,330 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>TEC — Level 1 Prototype</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TEC · Level 1</title>
 <style>
   :root{
-    --sky:#FFF7F0; --ink:#1F2A44; --sun:#F7B500; --leaf:#2BA56B; --sea:#2F80ED;
-    --berry:#F5761A; --plum:#E5484D; --card:#ffffff; --muted:#6B7280;
+    --bg:#FFF7F0; --card:#FFFFFF; --ink:#1F2A44; --muted:#6B7280; --line:#EEF0F4;
+    --orange:#F5761A; --orange-deep:#D9560B; --orange-soft:#FFE7D1;
+    --red:#E5484D; --blue:#2F80ED; --yellow:#F7B500; --green:#2BA56B; --purple:#8E6CEF;
+    --r:20px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  body{
-    font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;
-    background:radial-gradient(circle at 20% 10%,#fff 0,var(--sky) 60%);
-    color:var(--ink);overflow:hidden;
-  }
-  .screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;
-    justify-content:center;padding:24px;text-align:center;overflow-y:auto;animation:fade .5s ease}
-  .screen.active{display:flex}
-  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  body{font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  .hidden{display:none!important}
 
-  /* Anis + teachers */
-  .anis{width:200px;height:200px;cursor:pointer;animation:bob 3s ease-in-out infinite;flex:none}
-  .anis.small{width:120px;height:120px}
-  .anis svg,.teacher svg{width:100%;height:100%;display:block}
-  @keyframes bob{50%{transform:translateY(-8px)}}
-  .blink{animation:blink 4s infinite;transform-origin:center;transform-box:fill-box}
-  @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
-  .bubble{background:#fff;border-radius:28px;padding:18px 24px;max-width:520px;
-    font-size:clamp(20px,3vw,28px);line-height:1.4;box-shadow:0 8px 0 rgba(43,42,76,.08);margin-top:16px;min-height:70px}
+  /* ---------- Onboarding ---------- */
+  #onboard{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center}
+  .anis-big{width:200px;height:200px;border-radius:50%;overflow:hidden;background:#fff3e6;animation:bob 3s ease-in-out infinite}
+  .anis-big img,.anis-img{width:100%;height:100%;object-fit:cover;display:block}
+  @keyframes bob{50%{transform:translateY(-6px)}}
+  .say{background:#fff;border-radius:28px;padding:18px 26px;max-width:560px;font-size:clamp(22px,3vw,30px);line-height:1.35;min-height:72px;box-shadow:0 8px 0 rgba(31,42,68,.06)}
+  .step{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+  .big-btn{background:var(--orange);color:#fff;font-size:22px;font-weight:700;border-radius:999px;padding:14px 40px;min-height:60px;box-shadow:0 6px 0 var(--orange-deep)}
+  .big-btn:disabled{opacity:.4;cursor:default}
+  .big-btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--orange-deep)}
+  .name-in{font:inherit;font-size:28px;text-align:center;padding:12px 20px;border-radius:20px;border:3px solid var(--yellow);width:min(380px,90vw);min-height:60px;outline:none;background:#fff}
+  .ages{display:flex;gap:16px}
+  .age{width:110px;height:110px;border-radius:30px;background:#fff;font-size:44px;font-weight:700;color:var(--orange);box-shadow:0 8px 0 rgba(31,42,68,.06)}
+  .age.on{background:var(--orange);color:#fff;box-shadow:0 8px 0 var(--orange-deep)}
+  .likes{display:grid;grid-template-columns:repeat(4,minmax(110px,150px));gap:12px;max-width:680px}
+  .like{background:#fff;border-radius:22px;padding:14px 8px;font-size:40px;box-shadow:0 6px 0 rgba(31,42,68,.06);display:flex;flex-direction:column;align-items:center;gap:4px}
+  .like small{font-size:15px;color:var(--muted);font-weight:700}
+  .like.on{background:var(--orange-soft);outline:3px solid var(--orange)}
 
-  h2{font-size:clamp(24px,4vw,34px);margin:8px 0 12px}
-  p.lead{font-size:clamp(18px,2.6vw,22px);color:var(--muted);max-width:600px;margin:6px auto}
-
-  .btn{
-    font:inherit;font-size:22px;font-weight:700;border:0;border-radius:999px;
-    padding:16px 36px;min-width:160px;min-height:64px;cursor:pointer;color:#fff;
-    background:var(--berry);box-shadow:0 6px 0 #D9560B;transition:transform .1s;margin:8px;
-  }
-  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 #D9560B}
-  .btn.sea{background:var(--sea);box-shadow:0 6px 0 #2f7fb4}
-  .btn.leaf{background:var(--leaf);box-shadow:0 6px 0 #328d68}
-  .btn.ghost{background:#fff;color:var(--ink);box-shadow:0 6px 0 #e4dcc9}
-  .btn.small{min-width:0;min-height:52px;font-size:18px;padding:10px 20px;margin:0}
-  .btn:disabled{opacity:.4;cursor:default}
-
-  .progress{display:flex;gap:8px;margin-bottom:12px}
-  .progress span{width:12px;height:12px;border-radius:50%;background:#e4dcc9}
-  .progress span.on{background:var(--sun)}
-  .hint{font-size:16px;color:var(--muted);margin-top:8px}
-  .parent-note{font-size:14px;color:var(--muted);margin-top:18px}
-
-  input.name{
-    font:inherit;font-size:28px;text-align:center;padding:14px 20px;border-radius:20px;
-    border:3px solid var(--sun);width:min(420px,90vw);min-height:64px;outline:none;background:#fff;
-  }
-
-  .cards{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin:16px 0;max-width:900px}
-  .card{background:var(--card);border-radius:24px;padding:14px;width:200px;min-height:200px;border:0;
-    box-shadow:0 8px 0 rgba(43,42,76,.08);display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;color:inherit}
-  .card .art{width:150px;height:150px;border-radius:18px;overflow:hidden}
-  .card .role{font-size:18px;color:var(--muted)}
-  .card .who{font-size:22px;font-weight:700}
-
-  .week{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:860px;width:100%}
-  .day{background:#fff;border-radius:20px;padding:14px;box-shadow:0 6px 0 rgba(43,42,76,.08)}
-  .day .icon{font-size:40px}
-  .day .label{font-weight:700;font-size:20px}
-  .day .sub{color:var(--muted);font-size:16px}
-
-  /* World map */
-  .map-wrap{position:absolute;inset:0;overflow:hidden}
-  .map{position:absolute;inset:0;background:
-      linear-gradient(#bfe9ff 0%,#e9f9ff 45%,#c9f0c8 46%,#9fe0a0 100%)}
-  .map-head{position:absolute;top:0;left:0;right:0;padding:12px 20px;display:flex;justify-content:space-between;
-    align-items:center;gap:12px;z-index:5;background:rgba(255,255,255,.75);backdrop-filter:blur(6px);flex-wrap:wrap}
-  .map-head h2{margin:0;font-size:26px}
-  .map-say{position:absolute;top:96px;left:20px;right:20px;z-index:4;text-align:left;font-size:20px;max-width:640px;margin:0 auto}
-  .grid{position:absolute;top:180px;bottom:84px;left:0;right:0;overflow-y:auto;padding:12px 20px;
-    display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;align-content:start}
-  .tile-wrap{position:relative}
-  .tile{width:100%;border:0;border-radius:26px;padding:14px 10px;cursor:pointer;color:#fff;min-height:150px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-    box-shadow:0 8px 0 rgba(0,0,0,.12);font:inherit;font-weight:700;font-size:18px;text-shadow:0 2px 0 rgba(0,0,0,.15);
-    transition:transform .15s}
-  .tile:active{transform:scale(.96)}
-  .tile .ico{font-size:52px;line-height:1}
-  .tile-wrap .star{position:absolute;top:8px;right:12px;font-size:22px;color:#ffe066;text-shadow:0 2px 0 rgba(0,0,0,.2);pointer-events:none}
-  .map-foot{position:absolute;bottom:0;left:0;right:0;padding:14px 20px;display:flex;justify-content:center;
-    background:rgba(255,255,255,.75);backdrop-filter:blur(6px);z-index:5}
-
-  /* Modal */
-  .modal{position:fixed;inset:0;background:rgba(43,42,76,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
-  .modal.open{display:flex}
-  .sheet{background:#fff;border-radius:32px;padding:26px;max-width:640px;width:100%;max-height:92vh;overflow-y:auto;text-align:center}
-  .sheet .hero{height:180px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:110px}
-  .sheet .q{font-size:22px;margin:14px 0;color:var(--plum);font-weight:700}
-  .media-note{font-size:15px;color:var(--muted);background:#f4f1ff;border-radius:14px;padding:10px;margin:10px 0}
-  .actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:10px}
-
-  /* Scene transition */
-  .veil{position:fixed;inset:0;background:var(--sky);opacity:0;pointer-events:none;transition:opacity .45s ease;z-index:40;
-    display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--muted)}
-  .veil.on{opacity:1;pointer-events:auto}
-
-  .classroom{background:linear-gradient(#fff7d6,#ffe9b0)}
-  .shape-row{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin:20px 0}
-  .shape{width:130px;height:130px;border-radius:24px;border:0;font-size:70px;cursor:pointer;background:#fff;box-shadow:0 8px 0 rgba(0,0,0,.08)}
-  .shape.ok{background:#c9f5d8}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;
-    padding:12px 22px;border-radius:999px;font-size:18px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:30}
+  /* ---------- Dashboard (fits one screen, no scrolling) ---------- */
+  #dash{height:100vh;padding:18px;display:grid;grid-template-columns:1fr 300px;gap:16px;overflow:hidden}
+  .main{display:grid;grid-template-rows:auto auto minmax(0,1fr) minmax(0,1.25fr);gap:14px;min-height:0}
+  .side{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:14px;min-height:0}
+  .panel{background:var(--card);border-radius:var(--r);padding:16px;min-height:0;overflow:hidden}
+  .hero{display:flex;align-items:center;gap:18px;background:var(--orange);color:#fff;border-radius:var(--r);padding:16px 22px}
+  .hero .anis-img{width:86px;height:86px;border-radius:50%;flex:none;background:#fff3e6;cursor:pointer}
+  .hero h1{font-size:28px;line-height:1.1}
+  .hero p{font-size:17px;opacity:.95;margin-top:4px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .stat{border-radius:var(--r);padding:14px 18px;background:var(--card)}
+  .stat b{display:block;font-size:34px;line-height:1}
+  .stat span{color:var(--muted);font-size:15px}
+  .stat.o b{color:var(--orange)} .stat.bl b{color:var(--blue)} .stat.y b{color:var(--yellow)}
+  .mid{display:grid;grid-template-columns:1fr 1fr;gap:14px;min-height:0}
+  .title{font-size:18px;margin-bottom:10px;font-weight:700}
+  .donut-wrap{display:flex;align-items:center;gap:18px}
+  .donut{position:relative;width:140px;height:140px;flex:none}
+  .donut svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .donut .mid-t{position:absolute;inset:0;display:grid;place-items:center;font-size:30px;font-weight:700}
+  .legend div{display:flex;align-items:center;gap:8px;font-size:16px;margin:6px 0}
+  .legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{border-radius:999px;padding:10px 16px;font-size:17px;font-weight:700;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+  .chip .i{margin-right:6px}
+  .classes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;min-height:0;flex:1}
+  .class{display:flex;flex-direction:column;gap:8px;cursor:pointer;min-height:0}
+  .class .pic{flex:1;min-height:0;border-radius:16px;overflow:hidden;background:var(--bg)}
+  .class .pic img,.class .pic svg{width:100%;height:100%;object-fit:cover;display:block}
+  .class b{font-size:17px}
+  .class small{color:var(--muted);font-size:14px}
+  .tag{display:inline-block;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:700;color:#fff;align-self:flex-start}
+  .profile{display:flex;align-items:center;gap:12px}
+  .profile .av{width:52px;height:52px;border-radius:50%;background:var(--orange-soft);display:grid;place-items:center;font-size:26px;flex:none}
+  .profile b{font-size:19px;display:block}
+  .profile small{color:var(--muted);font-size:15px}
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+  .week div{text-align:center;padding:9px 0;border-radius:12px;font-size:13px;font-weight:700;background:var(--bg);color:var(--muted)}
+  .week div.learn{color:var(--ink)}
+  .week div.game{background:var(--yellow);color:var(--ink)}
+  .week div.explore{background:var(--green);color:#fff}
+  .week div.today{outline:3px solid var(--orange)}
+  .main-teacher{display:flex;flex-direction:column;gap:8px;min-height:0;cursor:pointer}
+  .main-teacher .pic{flex:1;min-height:0;border-radius:18px;overflow:hidden;background:var(--bg)}
+  .main-teacher .pic img,.main-teacher .pic svg{width:100%;height:100%;object-fit:cover;display:block}
+  .main-teacher b{font-size:20px}
+  .main-teacher small{color:var(--muted);font-size:15px}
+  .empty{color:var(--muted);font-size:15px}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:16px;opacity:0;transition:opacity .25s;pointer-events:none}
   .toast.show{opacity:1}
 </style>
 </head>
 <body>
 
-<!-- ============ Shared SVG templates ============ -->
-<template id="anis-svg">
-<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Anis, the learning companion">
-  <ellipse cx="100" cy="190" rx="60" ry="8" fill="rgba(43,42,76,.12)"/>
-  <path d="M100 18 Q92 2 110 6 Q104 14 100 18Z" fill="#4fbf8f"/>
-  <path d="M100 22 Q120 0 136 12 Q116 26 100 22Z" fill="#4fbf8f"/>
-  <circle cx="100" cy="100" r="82" fill="#ffd27a"/>
-  <circle cx="100" cy="104" r="72" fill="#ffe6a8"/>
-  <circle cx="68" cy="112" r="10" fill="#ff9aae" opacity=".7"/>
-  <circle cx="132" cy="112" r="10" fill="#ff9aae" opacity=".7"/>
-  <g class="blink"><circle cx="78" cy="98" r="9" fill="#2b2a4c"/><circle cx="122" cy="98" r="9" fill="#2b2a4c"/>
-    <circle cx="81" cy="95" r="3" fill="#fff"/><circle cx="125" cy="95" r="3" fill="#fff"/></g>
-  <path d="M86 120 Q100 134 114 120" stroke="#2b2a4c" stroke-width="5" fill="none" stroke-linecap="round"/>
-  <path d="M40 150 Q100 185 160 150 L160 170 Q100 196 40 170Z" fill="#8e7dff" opacity=".5"/>
-</svg>
-</template>
+<!-- ============ ONBOARDING ============ -->
+<section id="onboard">
+  <div class="anis-big"><img src="assets/anis.jpg" alt="Anis"></div>
+  <div class="say" id="say"></div>
 
-<!-- ============ 1. WELCOME ============ -->
-<section class="screen" id="s-welcome">
-  <div class="progress"><span class="on"></span><span></span><span></span><span></span><span></span></div>
-  <div class="anis" data-anis></div>
-  <div class="bubble" id="welcome-text"></div>
-  <button class="btn" id="welcome-next" style="display:none">Next</button>
-</section>
-
-<!-- ============ 2. NAME ============ -->
-<section class="screen" id="s-name">
-  <div class="progress"><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div>
-  <div class="anis small" data-anis></div>
-  <div class="bubble" id="name-text">What should I call you?</div>
-  <p class="hint">A grown-up can type the name here.</p>
-  <input class="name" id="name-input" maxlength="20" autocomplete="off" placeholder="Name">
-  <div><button class="btn" id="name-go" disabled>Hello!</button></div>
-</section>
-
-<!-- ============ 3. SUBJECTS + TEACHERS ============ -->
-<section class="screen" id="s-subjects">
-  <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
-  <div class="anis small" data-anis></div>
-  <div class="bubble" id="subjects-text"></div>
-  <div class="cards" id="teacher-cards"></div>
-  <button class="btn sea" id="subjects-next">Next</button>
-</section>
-
-<!-- ============ 4. WEEK ============ -->
-<section class="screen" id="s-week">
-  <div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
-  <div class="anis small" data-anis></div>
-  <div class="bubble" id="week-text"></div>
-  <div class="week">
-    <div class="day"><div class="icon">📚</div><div class="label">Mon – Fri</div><div class="sub">Learning days</div></div>
-    <div class="day"><div class="icon">🎲</div><div class="label">Saturday</div><div class="sub">Game Day</div></div>
-    <div class="day"><div class="icon">🌳</div><div class="label">Sunday</div><div class="sub">Exploration Day</div></div>
+  <div class="step hidden" id="st-name">
+    <input class="name-in" id="name" maxlength="20" placeholder="Name" autocomplete="off">
+    <button class="big-btn" id="to-age" disabled>Next</button>
   </div>
-  <button class="btn" id="week-next">Show me the worlds!</button>
+
+  <div class="step hidden" id="st-age">
+    <div class="ages">
+      <button class="age" data-age="2">2</button>
+      <button class="age" data-age="3">3</button>
+      <button class="age" data-age="4">4</button>
+    </div>
+    <button class="big-btn" id="to-likes" disabled>Next</button>
+  </div>
+
+  <div class="step hidden" id="st-likes">
+    <div class="likes" id="likes"></div>
+    <button class="big-btn" id="to-dash" disabled>Next</button>
+  </div>
 </section>
 
-<!-- ============ 5. WORLD EXPLORER ============ -->
-<section class="screen" id="s-map" style="padding:0;justify-content:flex-start;align-items:stretch;text-align:left">
-  <div class="map-wrap">
-    <div class="map"></div>
-    <div class="map-head">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="anis small" data-anis style="width:70px;height:70px"></div>
-        <h2>World Explorer</h2>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn sea small" id="open-myworlds">My Worlds (<span id="fav-count">0</span>)</button>
+<!-- ============ DASHBOARD ============ -->
+<section id="dash" class="hidden">
+  <div class="main">
+    <div class="hero">
+      <img class="anis-img" id="hero-anis" src="assets/anis.jpg" alt="Anis">
+      <div>
+        <h1 id="hello">Hello!</h1>
+        <p>Level 1</p>
       </div>
     </div>
-    <div class="bubble map-say" id="map-say"></div>
-    <div class="grid" id="grid"></div>
-    <div class="map-foot">
-      <button class="btn leaf" id="to-first-day">Start my first day →</button>
+
+    <div class="stats">
+      <div class="stat o"><b id="s-age">–</b><span>Age</span></div>
+      <div class="stat bl"><b>5</b><span>Learning days</span></div>
+      <div class="stat y"><b id="s-worlds">0</b><span>My worlds</span></div>
+    </div>
+
+    <div class="mid">
+      <div class="panel">
+        <div class="title">Your week</div>
+        <div class="donut-wrap">
+          <div class="donut" id="donut"></div>
+          <div class="legend">
+            <div><i style="background:var(--orange)"></i>Learning, Mon–Fri</div>
+            <div><i style="background:var(--yellow)"></i>Game Day, Sat</div>
+            <div><i style="background:var(--green)"></i>Explore Day, Sun</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="title">My worlds</div>
+        <div class="chips" id="chips"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="display:flex;flex-direction:column">
+      <div class="title">Classes</div>
+      <div class="classes" id="classes"></div>
     </div>
   </div>
+
+  <aside class="side">
+    <div class="panel">
+      <div class="profile">
+        <div class="av">🧒</div>
+        <div><b id="pname">Friend</b><small>Level 1</small></div>
+      </div>
+      <div class="week" id="week"></div>
+    </div>
+    <div class="panel">
+      <div class="title">Today</div>
+      <div class="empty" id="daytext"></div>
+    </div>
+    <div class="panel main-teacher" id="main-teacher" style="display:flex;flex-direction:column">
+      <div class="title">Your main teacher</div>
+      <div class="pic" id="mt-pic"></div>
+      <b>Teacher Character</b>
+      <small>Teaches you everything</small>
+    </div>
+  </aside>
 </section>
 
-<!-- ============ 6. MY WORLDS ============ -->
-<section class="screen" id="s-myworlds">
-  <h2>My Worlds</h2>
-  <div class="bubble" id="myworlds-text"></div>
-  <div class="cards" id="myworlds-cards"></div>
-  <div>
-    <button class="btn leaf" id="back-map">Explore more worlds</button>
-    <button class="btn ghost" id="myworlds-first">Start my first day</button>
-  </div>
-  <p class="parent-note">Your favourites are extra paths. Every child still explores all the subjects.</p>
-</section>
-
-<!-- ============ 7. FIRST LEARNING DAY ============ -->
-<section class="screen" id="s-firstday">
-  <div class="anis" data-anis></div>
-  <div class="bubble" id="firstday-text"></div>
-  <div class="card" style="width:min(460px,90vw);min-height:0;padding:22px">
-    <div class="role" id="fd-name"></div>
-    <div class="who">Shapes with Teacher Maths</div>
-    <div class="role">Find the round things and the square things.</div>
-    <div class="role">🏫 Classroom entrance: Maths Corner</div>
-  </div>
-  <button class="btn leaf" id="go-class">Shall we meet your first teacher?</button>
-</section>
-
-<!-- ============ 8. CLASSROOM ============ -->
-<section class="screen classroom" id="s-class">
-  <div class="anis small" data-anis></div>
-  <div class="bubble" id="class-text"></div>
-  <div class="shape-row" id="shapes"></div>
-  <button class="btn ghost" id="class-done" style="display:none">Finished! Back to my TEC</button>
-</section>
-
-<div class="veil" id="veil">Let's go…</div>
-<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-/* ---------- state (per-browser convenience only) ---------- */
-const KEY="tec-l1-proto";
-let state={};
-try{state=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){state={}}
-state.name=state.name||"";state.favs=state.favs||[];state.onboarded=!!state.onboarded;
+/* ---------- state (this browser only) ---------- */
+const KEY="tec-l1";
+let state={name:"",age:null,likes:[],done:false};
+try{state={...state,...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
-
-/* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
-function go(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  $("#"+id).classList.add("active");
-}
-function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
+const show=(el,on)=>el.classList.toggle("hidden",!on);
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1800)}
 
-/* Scene change with a soft veil, so the child is led gently between places */
-function transition(toId,after){
-  const v=$("#veil");v.classList.add("on");
-  setTimeout(()=>{go(toId);after&&after();setTimeout(()=>v.classList.remove("on"),200)},450);
+/* ---------- voice + typed text (browser voice for now) ---------- */
+function speak(text){
+  if(!("speechSynthesis" in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.rate=.9;u.pitch=1.15;u.lang="en-GB";
+  speechSynthesis.speak(u);
 }
-
-/* Narration: browser voice stand-in until recorded voice exists */
-/* Anis's voice: ElevenLabs through our own /api/speak (key stays on the server).
-   Falls back to the browser voice if the service isn't set up yet. */
-let anisAudio=null;
-async function speak(text){
-  if(anisAudio){anisAudio.pause();anisAudio=null}
-  if("speechSynthesis" in window)speechSynthesis.cancel();
-  try{
-    const r=await fetch("/api/speak",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});
-    if(!r.ok)throw new Error(r.status);
-    const url=URL.createObjectURL(await r.blob());
-    anisAudio=new Audio(url);
-    anisAudio.onended=()=>URL.revokeObjectURL(url);
-    await anisAudio.play();
-    return;
-  }catch(e){
-    if(!("speechSynthesis" in window))return;
-    const u=new SpeechSynthesisUtterance(text);
-    u.rate=.9;u.pitch=1.15;u.lang="en-GB";
-    speechSynthesis.speak(u);
-  }
-}
-/* Typewriter text + narration; a live-region keeps it readable for screen readers */
-let sayToken=0;
-function say(el,text,cb){
-  const my=++sayToken;
+let typing=0;
+function say(text,after){
+  const el=$("#say");const my=++typing;
   el.textContent="";speak(text);
   let i=0;const t=setInterval(()=>{
-    if(my!==sayToken){clearInterval(t);return}
+    if(my!==typing){clearInterval(t);return}
     el.textContent=text.slice(0,++i);
-    if(i>=text.length){clearInterval(t);cb&&setTimeout(cb,300)}
-  },28);
+    if(i>=text.length){clearInterval(t);after&&setTimeout(after,250)}
+  },30);
 }
 
-/* ---------- Anis + teacher artwork (original SVG, no photos) ---------- */
-const anisTpl=$("#anis-svg").innerHTML;
-function mountAnis(){
-  document.querySelectorAll("[data-anis]").forEach(el=>{
-    if(el.dataset.ready)return;
-    el.dataset.ready=1;el.innerHTML=anisTpl;
-    el.addEventListener("click",()=>{el.animate([{transform:"scale(1)"},{transform:"scale(1.08)"},{transform:"scale(1)"}],{duration:500})});
-  });
-}
-mountAnis();
+/* ---------- data ---------- */
+const TEACHERS={
+  arabic:  {name:"Teacher Arabic",    subject:"Arabic",                img:"assets/teachers/arabic.jpg",   color:"var(--red)",    line:"Hello! Let's learn Arabic letters together."},
+  english: {name:"Teacher English",   subject:"English",               img:"assets/teachers/english.jpg",  color:"var(--blue)",   line:"Hi! Let's read and say new words."},
+  maths:   {name:"Teacher Maths",     subject:"Mathematics",           img:"assets/teachers/maths.png",    color:"var(--orange)", line:"Hello! Let's count and find shapes."},
+  tech:    {name:"Teacher Tech",      subject:"Computer & Technology", img:null,                           color:"var(--purple)", line:"Hi! Let's explore computers and tools."},
+  char:    {name:"Teacher Character", subject:"Tarbiyah & Character",  img:"assets/teachers/tarbiyah.jpg", color:"var(--green)",  line:"Hello! I will teach you every day."}
+};
+const LIKES=[
+  {id:"cars",   ico:"🏎️", name:"Cars",    line:"Vroom! Let's see fast cars."},
+  {id:"animals",ico:"🦁", name:"Animals", line:"Let's meet friendly animals!"},
+  {id:"space",  ico:"🪐", name:"Space",   line:"Let's look at the stars and planets!"},
+  {id:"music",  ico:"🥁", name:"Music",   line:"Let's make some music!"},
+  {id:"art",    ico:"🎨", name:"Art",     line:"Let's paint something bright!"},
+  {id:"sports", ico:"⚽", name:"Sports",  line:"Let's run and jump!"},
+  {id:"science",ico:"🧪", name:"Science", line:"Let's mix and watch!"},
+  {id:"nature", ico:"🌻", name:"Nature",  line:"Let's watch seeds grow!"}
+];
+const LIKE=Object.fromEntries(LIKES.map(l=>[l.id,l]));
 
-/* Each teacher: same face style, different hair, shirt and prop, so they read as one family */
-function teacherSVG(t){
-  const hair={short:'<path d="M58 88 Q60 40 100 38 Q140 40 142 88 Q130 62 100 60 Q70 62 58 88Z" fill="'+t.hair+'"/>',
-              bun:'<circle cx="100" cy="34" r="16" fill="'+t.hair+'"/><path d="M60 90 Q62 50 100 50 Q138 50 140 90 Q128 66 100 66 Q72 66 60 90Z" fill="'+t.hair+'"/>',
-              hijab:'<path d="M46 110 Q44 52 100 46 Q156 52 154 110 L150 150 L50 150Z" fill="'+t.hair+'"/>'}[t.hairStyle];
-  const prop={book:'<rect x="62" y="150" width="40" height="30" rx="4" fill="#fff" stroke="#2b2a4c" stroke-width="3"/>',
-              star:'<path d="M150 150 l5 12 13 1 -10 8 4 13 -12 -8 -12 8 4 -13 -10 -8 13 -1z" fill="#ffd166"/>',
-              gear:'<circle cx="150" cy="160" r="14" fill="#8d99ae"/><circle cx="150" cy="160" r="5" fill="#fff"/>',
-              globe:'<circle cx="150" cy="158" r="16" fill="#4aa3df"/><path d="M134 158 H166" stroke="#fff" stroke-width="3"/>',
-              ball:'<circle cx="150" cy="160" r="15" fill="#fff" stroke="#2b2a4c" stroke-width="3"/>',
-              heart:'<path d="M150 170 Q132 156 140 148 Q150 142 150 152 Q150 142 160 148 Q168 156 150 170Z" fill="#ff6b8b"/>'}[t.prop];
-  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="${t.who}">
-    <ellipse cx="100" cy="192" rx="62" ry="7" fill="rgba(43,42,76,.12)"/>
-    <path d="M30 196 Q34 130 100 124 Q166 130 170 196Z" fill="${t.shirt}"/>
-    <rect x="90" y="112" width="20" height="18" fill="#e8b48f"/>
-    <ellipse cx="100" cy="88" rx="44" ry="48" fill="#f2c29b"/>
-    ${hair}
-    <circle cx="84" cy="90" r="5" fill="#2b2a4c"/><circle cx="116" cy="90" r="5" fill="#2b2a4c"/>
-    <circle cx="85.5" cy="88.5" r="1.6" fill="#fff"/><circle cx="117.5" cy="88.5" r="1.6" fill="#fff"/>
-    <circle cx="76" cy="104" r="6" fill="#ff9aae" opacity=".6"/><circle cx="124" cy="104" r="6" fill="#ff9aae" opacity=".6"/>
-    <path d="M88 110 Q100 120 112 110" stroke="#2b2a4c" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-    ${prop}
+/* simple original teacher drawing, used where there is no photo */
+function drawTeacher(c){
+  return `<svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" style="background:#F3EEFF">
+    <path d="M30 200 Q34 128 100 122 Q166 128 170 200Z" fill="${c}"/>
+    <ellipse cx="100" cy="88" rx="44" ry="48" fill="#F2C29B"/>
+    <path d="M56 90 Q58 40 100 38 Q142 40 144 90 Q130 64 100 62 Q70 64 56 90Z" fill="#1F1F2E"/>
+    <circle cx="84" cy="92" r="5" fill="#1F2A44"/><circle cx="116" cy="92" r="5" fill="#1F2A44"/>
+    <path d="M88 110 Q100 120 112 110" stroke="#1F2A44" stroke-width="3.5" fill="none" stroke-linecap="round"/>
   </svg>`;
 }
+const picOf=t=>t.img?`<img src="${t.img}" alt="${t.name}">`:drawTeacher("#8E6CEF");
 
-/* ---------- content ---------- */
-const TEACHERS=[
-  {subject:"English",who:"Teacher English",img:"assets/teachers/english.jpg"},
-  {subject:"Arabic",who:"Teacher Arabic",img:"assets/teachers/arabic.jpg"},
-  {subject:"Mathematics",who:"Teacher Maths",img:"assets/teachers/maths.png"},
-  {subject:"Computer & Technology",who:"Teacher Tech",hairStyle:"short",hair:"#1f1f2e",shirt:"#8e7dff",prop:"heart"},
-  {subject:"Tarbiyah & Character",who:"Teacher Character",img:"assets/teachers/tarbiyah.jpg"},
-  {subject:"World Discovery",who:"Teacher Explorer",hairStyle:"short",hair:"#7a4a2b",shirt:"#2a9d8f",prop:"globe"}
-];
-
-/* 24 worlds: colour, icon, intro, curiosity question. Icons are temporary until original art arrives. */
-const WORLDS=[
- {id:"cars",name:"Cars and Machines",ico:"🏎️",c:"#ff6b5b",intro:"Have you ever seen a car so fast it looks like it is flying along the road?",q:"Which do you think is faster, a car or a bicycle?"},
- {id:"chess",name:"Chess Kingdom",ico:"♞",c:"#6b5b95",intro:"Welcome to the Chess Kingdom! Each piece has its own special way to move. Shall we meet them?",q:"Which piece looks like a tall tower?"},
- {id:"geo",name:"Geography",ico:"🗺️",c:"#2a9d8f",intro:"Our world is full of mountains, rivers and oceans. Let's find them on a big map!",q:"Can you point to the biggest blue part of the map?"},
- {id:"history",name:"History and Civilisations",ico:"🏛️",c:"#c8a165",intro:"Long, long ago, people built amazing buildings and invented wonderful things. Let's visit them!",q:"What would you like to build in a long time ago village?"},
- {id:"space",name:"Space and Astronomy",ico:"🪐",c:"#3d348b",intro:"Up above the clouds, there are planets, stars and a shining moon. Shall we travel there?",q:"Which planet has beautiful rings?"},
- {id:"nature",name:"Nature and Plants",ico:"🌻",c:"#7bb661",intro:"Seeds become sprouts, sprouts become flowers, and flowers become fruit. Let's grow!",q:"What does a seed need to grow?"},
- {id:"animals",name:"Animal Kingdom",ico:"🦁",c:"#e09f3e",intro:"Would you like to meet some wonderful animals? They roar, hop, swim and sing!",q:"Which animal says moo?"},
- {id:"lab",name:"Science Lab",ico:"🧪",c:"#4cc9f0",intro:"In the Science Lab, we mix, watch and wonder. What happens when we try something new?",q:"What colour is the water when we add blue drops?"},
- {id:"arch",name:"Architecture",ico:"🏰",c:"#f28482",intro:"Houses, bridges and castles are built by careful builders. Let's see how they stand tall!",q:"What shape is a house's roof?"},
- {id:"aviation",name:"Aviation",ico:"✈️",c:"#577590",intro:"Planes fly high above the clouds. Would you like to take a flight with me?",q:"Where do you think the plane is going?"},
- {id:"ocean",name:"Oceans and Exploration",ico:"🐠",c:"#0077b6",intro:"Under the waves there are fish, coral and sparkling treasures. Let's dive in!",q:"Which fish do you see first?"},
- {id:"art",name:"Art and Creativity",ico:"🎨",c:"#ff8fab",intro:"Every colour has a story. Let's paint, draw and make something beautiful!",q:"Which colour is your favourite?"},
- {id:"music",name:"Music and Instruments",ico:"🥁",c:"#9d4edd",intro:"Drums go boom, flutes go whoo, and pianos sing. Shall we make some music?",q:"Which instrument makes the loudest sound?"},
- {id:"stories",name:"Stories and Literature",ico:"📖",c:"#bc6c25",intro:"Once upon a time, a little story began. Would you like to hear it?",q:"What is the name of your favourite character?"},
- {id:"maths",name:"Mathematical Wonders",ico:"🔷",c:"#00b4d8",intro:"Shapes, patterns and numbers are everywhere. Let's count the wonders together!",q:"How many sides does a triangle have?"},
- {id:"inventions",name:"Inventions and Technology",ico:"💡",c:"#ffb703",intro:"People had a wonderful idea and made a new thing. Let's see some clever inventions!",q:"What invention helps us see in the dark?"},
- {id:"sports",name:"Sports and Athletics",ico:"⚽",c:"#38b000",intro:"Run, jump, kick and catch! Let's get moving in the world of sports!",q:"Which ball do you kick with your feet?"},
- {id:"food",name:"Food and Cultures",ico:"🥘",c:"#ef476f",intro:"Every family makes food in its own special way. Let's taste the world!",q:"What is your favourite fruit?"},
- {id:"body",name:"Human Body",ico:"🫀",c:"#e63946",intro:"Your heart goes thump, thump. Your eyes see, and your hands can hold. Let's explore you!",q:"What do you use to hear?"},
- {id:"engineering",name:"Building and Engineering",ico:"🏗️",c:"#8d99ae",intro:"Cranes lift heavy bricks, and tall towers rise up. Let's build something together!",q:"What can a big crane lift?"},
- {id:"languages",name:"Languages and Communication",ico:"💬",c:"#06a77d",intro:"People around the world say hello in many different ways. Let's learn some!",q:"How do you say hello?"},
- {id:"explorers",name:"World Explorers",ico:"🧭",c:"#a47148",intro:"Brave explorers sailed, walked and climbed to find new places. Ready to go?",q:"Where would you like to explore first?"},
- {id:"society",name:"People and Society",ico:"🤝",c:"#4361ee",intro:"We all live together and help each other. Let's meet the people around us!",q:"Who helps you at home?"},
- {id:"ideas",name:"Ideas and Inventions",ico:"🌈",c:"#f72585",intro:"A good idea can change the world. What idea would you like to have?",q:"What would you like to make tomorrow?"}
-];
-const WORLD=Object.fromEntries(WORLDS.map(w=>[w.id,w]));
-
-/* ---------- WELCOME ---------- */
-const WELCOME_LINE="Assalamu alaikum! Welcome to TEC. I am Anis. I will be your friend. Let's meet your teachers!";
-go("s-welcome");
-say($("#welcome-text"),WELCOME_LINE,()=>{$("#welcome-next").style.display="inline-block"});
-$("#welcome-next").onclick=()=>{go("s-name");say($("#name-text"),"What should I call you?")};
-
-/* ---------- NAME ---------- */
-const nameIn=$("#name-input"),nameGo=$("#name-go");
-nameIn.oninput=()=>nameGo.disabled=nameIn.value.trim().length<1;
-nameGo.onclick=()=>{
+/* ---------- onboarding ---------- */
+function startOnboarding(){
+  show($("#onboard"),true);show($("#dash"),false);
+  say("Hello! I am Anis. I am your learning friend.",()=>{
+    say("What is your name?",()=>show($("#st-name"),true));
+  });
+}
+const nameIn=$("#name");
+nameIn.oninput=()=>{$("#to-age").disabled=nameIn.value.trim().length<1};
+$("#to-age").onclick=()=>{
   state.name=nameIn.value.trim();save();
-  go("s-subjects");
-  say($("#subjects-text"),`Nice to meet you, ${state.name}! Here are your teachers. Every child learns with all of them.`);
+  show($("#st-name"),false);
+  say(`Nice to meet you, ${state.name}! How old are you?`,()=>show($("#st-age"),true));
 };
-$("#teacher-cards").innerHTML=TEACHERS.map(t=>`
-  <div class="card">
-    <div class="art">${t.img?`<img src="${t.img}" alt="${t.who}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">`:teacherSVG(t)}</div>
-    <div class="who">${t.who}</div>
-    <div class="role">${t.subject}</div>
-  </div>`).join("");
-$("#subjects-next").onclick=()=>{
-  go("s-week");
-  say($("#week-text"),"Monday to Friday, we learn. Saturday is Game Day. Sunday is Explore Day!");
+document.querySelectorAll(".age").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".age").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");state.age=+b.dataset.age;$("#to-likes").disabled=false;
+});
+$("#to-likes").onclick=()=>{
+  save();show($("#st-age"),false);
+  say("What do you like? Pick two or three.",()=>{renderLikes();show($("#st-likes"),true)});
 };
-$("#week-next").onclick=()=>{
-  state.onboarded=true;save();
-  transition("s-map",()=>{renderMap();showMapIntro()});
+function renderLikes(){
+  $("#likes").innerHTML=LIKES.map(l=>`
+    <button class="like ${state.likes.includes(l.id)?"on":""}" data-id="${l.id}">${l.ico}<small>${l.name}</small></button>`).join("");
+  document.querySelectorAll(".like").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.id;
+    if(state.likes.includes(id))state.likes=state.likes.filter(x=>x!==id);
+    else if(state.likes.length<3)state.likes.push(id);
+    else{toast("Pick up to three");return}
+    renderLikes();
+  });
+  $("#to-dash").disabled=state.likes.length<2;
+}
+$("#to-dash").onclick=()=>{
+  state.done=true;save();
+  say(`Great, ${state.name}! Let's go to your TEC.`,()=>setTimeout(showDashboard,900));
 };
 
-/* ---------- WORLD MAP ---------- */
-function renderMap(){
-  $("#grid").innerHTML=WORLDS.map(w=>`
-    <div class="tile-wrap">
-      <button class="tile" style="background:${w.c}" data-id="${w.id}" aria-label="${w.name}">
-        <span class="ico">${w.ico}</span>${w.name}
-      </button>
-      ${state.favs.includes(w.id)?'<span class="star" aria-label="In My Worlds">★</span>':''}
-    </div>`).join("");
-  $("#fav-count").textContent=state.favs.length;
-  document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>openWorld(b.dataset.id));
-}
-/* Anis speaks on the map itself: one welcome, then at most one gentle suggestion per visit */
-function showMapIntro(){
-  say($("#map-say"),`${state.name||"Friend"}, look at all these worlds! Tap one to visit.`,()=>{
-    setTimeout(suggestOnce,6000);
-  });
-}
-let suggested=false;
-function suggestOnce(){
-  if(suggested||!$("#s-map").classList.contains("active")||$("#modal").classList.contains("open"))return;
-  suggested=true;
-  const pick=[...WORLDS].sort(()=>Math.random()-.5).slice(0,2);
-  say($("#map-say"),`Would you like to visit ${pick[0].name} or ${pick[1].name}? Or pick any world you like!`);
-}
-$("#to-first-day").onclick=()=>goFirstDay();
-$("#open-myworlds").onclick=()=>{renderMyWorlds();go("s-myworlds")};
+/* ---------- dashboard ---------- */
+function showDashboard(){
+  show($("#onboard"),false);show($("#dash"),true);
+  const name=state.name||"Friend";
+  $("#hello").textContent=`Hello, ${name}!`;
+  $("#pname").textContent=name;
+  $("#s-age").textContent=state.age??"–";
+  $("#s-worlds").textContent=state.likes.length;
 
-/* ---------- PREVIEW ---------- */
-function openWorld(id){
-  const w=WORLD[id];const fav=state.favs.includes(id);
-  $("#sheet").innerHTML=`
-    <div class="hero" style="background:${w.c}">${w.ico}</div>
-    <h2>${w.name}</h2>
-    <p class="lead">${w.intro}</p>
-    <div class="q">${w.q}</div>
-    <div class="media-note">🎬 Short preview video and photos for this world are placeholders until approved content is added.</div>
-    <div class="actions">
-      <button class="btn sea" id="play">🔊 Listen again</button>
-      <button class="btn ${fav?'ghost':'leaf'}" id="fav">${fav?'★ Remove from My Worlds':'★ Add to My Worlds'}</button>
-      <button class="btn ghost" id="more">Explore this world</button>
-    </div>
-    <div class="actions"><button class="btn ghost" id="close">Back to the map</button></div>`;
-  $("#modal").classList.add("open");
-  speak(w.intro+" "+w.q);
-  $("#play").onclick=()=>speak(w.intro+" "+w.q);
-  $("#close").onclick=closeModal;
-  $("#fav").onclick=()=>{
-    if(state.favs.includes(id)) state.favs=state.favs.filter(x=>x!==id);
-    else state.favs.push(id);
-    save();renderMap();closeModal();
-    toast(state.favs.includes(id)?`${w.name} added to My Worlds`:`${w.name} removed. You can add it back anytime`);
-  };
-  $("#more").onclick=()=>{
-    $("#sheet").innerHTML=`
-      <div class="hero" style="background:${w.c}">${w.ico}</div>
-      <h2>${w.name}</h2>
-      <p class="lead">Here we would explore pictures, stories and short videos together.</p>
-      <div class="media-note">Placeholder: approved picture and video content goes here.</div>
-      <div class="actions"><button class="btn ghost" id="back">Back</button></div>`;
-    $("#back").onclick=()=>openWorld(id);
-    speak(`Let's explore ${w.name} together!`);
-  };
-}
-function closeModal(){$("#modal").classList.remove("open");if("speechSynthesis" in window)speechSynthesis.cancel()}
-$("#modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+  const colors=["var(--orange)","var(--blue)","var(--green)"];
+  $("#chips").innerHTML=state.likes.length
+    ? state.likes.map((id,i)=>`<button class="chip" style="background:${colors[i%3]}" data-id="${id}"><span class="i">${LIKE[id].ico}</span>${LIKE[id].name}</button>`).join("")
+    : `<span class="empty">No worlds chosen yet.</span>`;
+  document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>say(LIKE[b.dataset.id].line));
 
-/* ---------- MY WORLDS ---------- */
-function renderMyWorlds(){
-  const favs=state.favs.map(id=>WORLD[id]).filter(Boolean);
-  $("#myworlds-cards").innerHTML=favs.map(w=>`
-    <button class="card" data-id="${w.id}">
-      <div class="art" style="font-size:72px;line-height:110px">${w.ico}</div><div class="who">${w.name}</div>
-    </button>`).join("");
-  $("#myworlds-text").textContent=favs.length
-    ? `${state.name}, these are your favourite worlds! Tap one to visit.`
-    : `${state.name}, you have no favourites yet. Tap any world to add it!`;
-  document.querySelectorAll("#myworlds-cards .card").forEach(c=>c.onclick=()=>{go("s-map");renderMap();openWorld(c.dataset.id)});
-}
-$("#back-map").onclick=()=>{go("s-map");renderMap()};
-$("#myworlds-first").onclick=()=>goFirstDay();
+  $("#classes").innerHTML=["arabic","english","maths","tech"].map(k=>{const t=TEACHERS[k];return `
+    <div class="class" data-k="${k}">
+      <div class="pic">${picOf(t)}</div>
+      <span class="tag" style="background:${t.color}">Level 1</span>
+      <b>${t.name}</b><small>${t.subject}</small>
+    </div>`}).join("");
+  document.querySelectorAll(".class").forEach(c=>c.onclick=()=>say(TEACHERS[c.dataset.k].line));
 
-/* ---------- FIRST LEARNING DAY ---------- */
-function goFirstDay(){
-  transition("s-firstday",()=>{
-    $("#fd-name").textContent=`Hello ${state.name}!`;
-    say($("#firstday-text"),`Great job, ${state.name}! Your first day is ready. Shall we meet your teacher?`);
-  });
-}
-$("#go-class").onclick=()=>transition("s-class",startClass);
+  $("#mt-pic").innerHTML=picOf(TEACHERS.char);
+  $("#main-teacher").onclick=()=>say(TEACHERS.char.line);
 
-/* ---------- CLASSROOM (first lesson, short and gentle) ---------- */
-function startClass(){
-  const shapes=[{s:"⭕",round:true},{s:"🟥",round:false},{s:"🔺",round:false},{s:"🟡",round:true}];
-  shapes.sort(()=>Math.random()-.5);
-  $("#class-done").style.display="none";
-  say($("#class-text"),"Let's find the round shape!");
-  $("#shapes").innerHTML=shapes.map(x=>`<button class="shape" data-r="${x.round}" aria-label="${x.round?'round':'not round'} shape">${x.s}</button>`).join("");
-  document.querySelectorAll(".shape").forEach(b=>b.onclick=()=>{
-    if(b.dataset.r==="true"){
-      b.classList.add("ok");speak("Well done! That's round!");
-      say($("#class-text"),`Well done, ${state.name}! You found a round shape.`);
-      $("#class-done").style.display="inline-block";
-      document.querySelectorAll(".shape").forEach(x=>x.disabled=true);
-    }else{
-      speak("Try again!");
-      toast("Try again — find the round one!");
-    }
-  });
-}
-$("#class-done").onclick=()=>transition("s-map",()=>{renderMap();suggested=true;say($("#map-say"),`Great learning, ${state.name}! Which world would you like to visit next?`)});
+  // Monday-first week; today is highlighted from the device clock
+  const today=new Date().getDay();
+  $("#week").innerHTML=[1,2,3,4,5,6,0].map((d,i)=>{
+    const cls=d===6?"game":d===0?"explore":"learn";
+    return `<div class="${cls}${d===today?" today":""}">${"MTWTFSS"[i]}</div>`;
+  }).join("");
+  $("#daytext").textContent=today===0?"Explore Day":today===6?"Game Day":"Learning Day";
 
-/* ---------- Resume a returning visitor ---------- */
-if(state.onboarded&&state.name){
-  nameIn.value=state.name;
-  renderMap();go("s-map");
-  say($("#map-say"),`Welcome back, ${state.name}! Which world would you like to visit today?`);
+  $("#donut").innerHTML=(()=>{
+    const R=58,C=2*Math.PI*R,parts=[{v:5,c:"var(--orange)"},{v:1,c:"var(--yellow)"},{v:1,c:"var(--green)"}];
+    let off=0;
+    const arcs=parts.map(p=>{const len=C*p.v/7;const s=`<circle r="${R}" cx="70" cy="70" fill="none" stroke="${p.c}" stroke-width="16" stroke-dasharray="${(len-3).toFixed(1)} ${C}" stroke-dashoffset="${(-off).toFixed(1)}"/>`;off+=len;return s}).join("");
+    return `<svg viewBox="0 0 140 140"><circle r="${R}" cx="70" cy="70" fill="none" stroke="var(--line)" stroke-width="16"/>${arcs}</svg><div class="mid-t">7</div>`;
+  })();
+
+  $("#hero-anis").onclick=()=>say(`Hello${state.name?", "+state.name:""}! Let's learn together.`);
 }
+
+/* ---------- start ---------- */
+if(state.done&&state.name)showDashboard();
+else startOnboarding();
 </script>
 </body>
 </html>
