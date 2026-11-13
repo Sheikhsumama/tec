@@ -6,8 +6,8 @@
 <title>TEC — Level 1 Prototype</title>
 <style>
   :root{
-    --sky:#fff6e6; --ink:#2b2a4c; --sun:#ffb938; --leaf:#4fbf8f; --sea:#4aa3df;
-    --berry:#ff6b8b; --plum:#8e7dff; --card:#ffffff; --muted:#6d6b8a;
+    --sky:#FFF7F0; --ink:#1F2A44; --sun:#F7B500; --leaf:#2BA56B; --sea:#2F80ED;
+    --berry:#F5761A; --plum:#E5484D; --card:#ffffff; --muted:#6B7280;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -37,9 +37,9 @@
   .btn{
     font:inherit;font-size:22px;font-weight:700;border:0;border-radius:999px;
     padding:16px 36px;min-width:160px;min-height:64px;cursor:pointer;color:#fff;
-    background:var(--berry);box-shadow:0 6px 0 #c94a68;transition:transform .1s;margin:8px;
+    background:var(--berry);box-shadow:0 6px 0 #D9560B;transition:transform .1s;margin:8px;
   }
-  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 #c94a68}
+  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 #D9560B}
   .btn.sea{background:var(--sea);box-shadow:0 6px 0 #2f7fb4}
   .btn.leaf{background:var(--leaf);box-shadow:0 6px 0 #328d68}
   .btn.ghost{background:#fff;color:var(--ink);box-shadow:0 6px 0 #e4dcc9}
@@ -60,7 +60,7 @@
   .cards{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin:16px 0;max-width:900px}
   .card{background:var(--card);border-radius:24px;padding:14px;width:200px;min-height:200px;border:0;
     box-shadow:0 8px 0 rgba(43,42,76,.08);display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;color:inherit}
-  .card .art{width:110px;height:110px}
+  .card .art{width:150px;height:150px;border-radius:18px;overflow:hidden}
   .card .role{font-size:18px;color:var(--muted)}
   .card .who{font-size:22px;font-weight:700}
 
@@ -325,11 +325,11 @@ function teacherSVG(t){
 
 /* ---------- content ---------- */
 const TEACHERS=[
-  {subject:"English",who:"Teacher English",hairStyle:"short",hair:"#5a3825",shirt:"#4aa3df",prop:"book"},
-  {subject:"Arabic",who:"Teacher Arabic",hairStyle:"hijab",hair:"#2b2a4c",shirt:"#4fbf8f",prop:"star"},
-  {subject:"Mathematics",who:"Teacher Maths",hairStyle:"bun",hair:"#3b2f2f",shirt:"#ff6b8b",prop:"gear"},
+  {subject:"English",who:"Teacher English",img:"assets/teachers/english.jpg"},
+  {subject:"Arabic",who:"Teacher Arabic",img:"assets/teachers/arabic.jpg"},
+  {subject:"Mathematics",who:"Teacher Maths",img:"assets/teachers/maths.png"},
   {subject:"Computer & Technology",who:"Teacher Tech",hairStyle:"short",hair:"#1f1f2e",shirt:"#8e7dff",prop:"heart"},
-  {subject:"Tarbiyah & Character",who:"Teacher Character",hairStyle:"hijab",hair:"#c8a165",shirt:"#ffb938",prop:"ball"},
+  {subject:"Tarbiyah & Character",who:"Teacher Character",img:"assets/teachers/tarbiyah.jpg"},
   {subject:"World Discovery",who:"Teacher Explorer",hairStyle:"short",hair:"#7a4a2b",shirt:"#2a9d8f",prop:"globe"}
 ];
 
@@ -363,7 +363,7 @@ const WORLDS=[
 const WORLD=Object.fromEntries(WORLDS.map(w=>[w.id,w]));
 
 /* ---------- WELCOME ---------- */
-const WELCOME_LINE="Assalamu alaikum! Welcome to TEC! My name is Anis. I'll be your learning companion. I'll help you meet your teachers, visit your classrooms and discover wonderful things.";
+const WELCOME_LINE="Assalamu alaikum! Welcome to TEC. I am Anis. I will be your friend. Let's meet your teachers!";
 go("s-welcome");
 say($("#welcome-text"),WELCOME_LINE,()=>{$("#welcome-next").style.display="inline-block"});
 $("#welcome-next").onclick=()=>{go("s-name");say($("#name-text"),"What should I call you?")};
@@ -374,17 +374,17 @@ nameIn.oninput=()=>nameGo.disabled=nameIn.value.trim().length<1;
 nameGo.onclick=()=>{
   state.name=nameIn.value.trim();save();
   go("s-subjects");
-  say($("#subjects-text"),`Nice to meet you, ${state.name}! Every child learns English, Arabic, Maths, Computer and Technology, Tarbiyah and Character, and World Discovery. Here are your six teachers.`);
+  say($("#subjects-text"),`Nice to meet you, ${state.name}! Here are your teachers. Every child learns with all of them.`);
 };
 $("#teacher-cards").innerHTML=TEACHERS.map(t=>`
   <div class="card">
-    <div class="art">${teacherSVG(t)}</div>
+    <div class="art">${t.img?`<img src="${t.img}" alt="${t.who}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">`:teacherSVG(t)}</div>
     <div class="who">${t.who}</div>
     <div class="role">${t.subject}</div>
   </div>`).join("");
 $("#subjects-next").onclick=()=>{
   go("s-week");
-  say($("#week-text"),"Monday to Friday are learning days. Saturday is Game Day. Sunday is Exploration Day!");
+  say($("#week-text"),"Monday to Friday, we learn. Saturday is Game Day. Sunday is Explore Day!");
 };
 $("#week-next").onclick=()=>{
   state.onboarded=true;save();
@@ -405,7 +405,7 @@ function renderMap(){
 }
 /* Anis speaks on the map itself: one welcome, then at most one gentle suggestion per visit */
 function showMapIntro(){
-  say($("#map-say"),`${state.name||"Friend"}, there are so many wonderful worlds waiting for you. Tap any world to visit it!`,()=>{
+  say($("#map-say"),`${state.name||"Friend"}, look at all these worlds! Tap one to visit.`,()=>{
     setTimeout(suggestOnce,6000);
   });
 }
@@ -477,7 +477,7 @@ $("#myworlds-first").onclick=()=>goFirstDay();
 function goFirstDay(){
   transition("s-firstday",()=>{
     $("#fd-name").textContent=`Hello ${state.name}!`;
-    say($("#firstday-text"),`Wonderful! Your TEC journey is ready, ${state.name}. Shall we meet your first teacher?`);
+    say($("#firstday-text"),`Great job, ${state.name}! Your first day is ready. Shall we meet your teacher?`);
   });
 }
 $("#go-class").onclick=()=>transition("s-class",startClass);
