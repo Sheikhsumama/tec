@@ -39,7 +39,8 @@
   .hero{background:var(--orange);color:#fff;border-radius:var(--radius);padding:24px 28px;display:flex;align-items:center;gap:20px;justify-content:space-between;flex-wrap:wrap}
   .hero h2{font-size:24px;margin-bottom:6px}
   .hero p{opacity:.92}
-  .hero .anis{width:96px;height:96px;flex:none}
+  .hero .anis{width:120px;height:120px;flex:none;border-radius:50%;overflow:hidden;background:#fff3e6}
+  .hero .anis img{width:100%;height:100%;object-fit:cover;display:block}
   .hero .btn{background:#fff;color:var(--orange-deep);border:0;border-radius:999px;padding:12px 22px;font-weight:700;font-size:16px;margin-top:12px}
 
   .section-title{display:flex;justify-content:space-between;align-items:center;font-size:18px;margin-bottom:12px}
@@ -138,7 +139,7 @@
         <p>Anis has picked a world for today. Shall we explore it together?</p>
         <button class="btn" id="go">Continue my day</button>
       </div>
-      <div class="anis" id="anis" aria-hidden="true"></div>
+      <div class="anis" id="anis"><img src="assets/anis.jpg" alt="Anis, the learning companion"></div>
     </section>
 
     <section class="stats" aria-label="Summary">
@@ -206,19 +207,7 @@
 
 <script>
 /* ---- Anis (same character as the prototype) ---- */
-document.getElementById("anis").innerHTML=`
-<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="100" cy="190" rx="60" ry="8" fill="rgba(0,0,0,.12)"/>
-  <path d="M100 18 Q92 2 110 6 Q104 14 100 18Z" fill="#4fbf8f"/>
-  <path d="M100 22 Q120 0 136 12 Q116 26 100 22Z" fill="#4fbf8f"/>
-  <circle cx="100" cy="100" r="82" fill="#ffd27a"/>
-  <circle cx="100" cy="104" r="72" fill="#ffe6a8"/>
-  <circle cx="68" cy="112" r="10" fill="#ff9aae" opacity=".7"/>
-  <circle cx="132" cy="112" r="10" fill="#ff9aae" opacity=".7"/>
-  <circle cx="78" cy="98" r="9" fill="#2b2a4c"/><circle cx="122" cy="98" r="9" fill="#2b2a4c"/>
-  <circle cx="81" cy="95" r="3" fill="#fff"/><circle cx="125" cy="95" r="3" fill="#fff"/>
-  <path d="M86 120 Q100 134 114 120" stroke="#2b2a4c" stroke-width="5" fill="none" stroke-linecap="round"/>
-</svg>`;
+
 
 /* ---- Saved name, if the prototype stored one (this browser only) ---- */
 try{

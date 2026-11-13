@@ -1,0 +1,11 @@
+{
+  "character": "Anis",
+  "image": "assets/anis.jpg",
+  "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "PASTE_ELEVENLABS_VOICE_ID_HERE",
+    "model_id": "eleven_multilingual_v2",
+    "language": "en",
+    "notes": "Warm, friendly, slow and clear, suited to children aged 2-4. The API key must NOT be stored in this repo."
+  }
+}
