@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TEC — My Dashboard</title>
+<style>
+  :root{
+    --orange:#F5761A; --orange-deep:#D9560B; --orange-soft:#FFE7D1;
+    --red:#E5484D; --blue:#2F80ED; --yellow:#F7B500; --green:#2BA56B;
+    --ink:#1F2A44; --muted:#6B7280; --line:#EEF0F4; --card:#FFFFFF; --bg:#FFF7F0;
+    --radius:20px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --bg:#1B1F2E; --card:#252B3D; --ink:#F4F6FB; --muted:#A7B0C4; --line:#333950; --orange-soft:#3A2A1F; }
+  }
+  :root[data-theme="dark"]{ --bg:#1B1F2E; --card:#252B3D; --ink:#F4F6FB; --muted:#A7B0C4; --line:#333950; --orange-soft:#3A2A1F; }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  button{font:inherit;cursor:pointer}
+  .app{display:grid;grid-template-columns:76px 1fr 320px;gap:20px;padding:20px;min-height:100vh;max-width:1400px;margin:0 auto}
+
+  /* Sidebar */
+  .rail{background:var(--card);border-radius:var(--radius);padding:18px 0;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .rail .logo{width:44px;height:44px;border-radius:14px;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:700;font-size:18px}
+  .rail button{width:46px;height:46px;border-radius:14px;border:0;background:transparent;font-size:20px;color:var(--muted)}
+  .rail button.on{background:var(--orange);color:#fff}
+  .rail .spacer{flex:1}
+
+  /* Main */
+  main{display:flex;flex-direction:column;gap:20px;min-width:0}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  header h1{font-size:28px}
+  header h1 span{color:var(--orange)}
+  .search{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:999px;padding:10px 18px;min-width:240px;color:var(--muted)}
+  .search input{border:0;background:transparent;font:inherit;color:var(--ink);outline:none;width:100%}
+
+  .hero{background:var(--orange);color:#fff;border-radius:var(--radius);padding:24px 28px;display:flex;align-items:center;gap:20px;justify-content:space-between;flex-wrap:wrap}
+  .hero h2{font-size:24px;margin-bottom:6px}
+  .hero p{opacity:.92}
+  .hero .anis{width:96px;height:96px;flex:none}
+  .hero .btn{background:#fff;color:var(--orange-deep);border:0;border-radius:999px;padding:12px 22px;font-weight:700;font-size:16px;margin-top:12px}
+
+  .section-title{display:flex;justify-content:space-between;align-items:center;font-size:18px;margin-bottom:12px}
+  .section-title a{color:var(--orange);font-size:14px;text-decoration:none;font-weight:700}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .stat{background:var(--card);border-radius:var(--radius);padding:20px}
+  .stat .num{font-size:34px;font-weight:700}
+  .stat .lbl{color:var(--muted);font-size:14px;margin-top:2px}
+  .stat.o .num{color:var(--orange)} .stat.b .num{color:var(--blue)} .stat.y .num{color:var(--yellow)}
+
+  .row{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+  .panel{background:var(--card);border-radius:var(--radius);padding:20px}
+  .ring-wrap{display:flex;align-items:center;gap:20px}
+  .ring{position:relative;width:180px;height:180px;flex:none}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring .mid{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+  .ring .mid b{font-size:36px}
+  .ring .mid small{display:block;color:var(--muted);font-size:13px}
+  .legend{display:flex;flex-direction:column;gap:10px;font-size:15px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
+
+  .activity{display:flex;flex-direction:column;gap:12px}
+  .item{display:flex;gap:14px;align-items:center;background:var(--bg);border-radius:16px;padding:12px}
+  .item .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;flex:none;color:#fff}
+  .item .t{flex:1;min-width:0}
+  .item .t b{display:block}
+  .item .t small{color:var(--muted)}
+  .pill{border:0;border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px;color:#fff}
+
+  .progress-bar{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:6px}
+  .progress-bar span{display:block;height:100%;border-radius:999px}
+
+  .story{display:flex;gap:16px;align-items:center;background:var(--bg);border-radius:16px;padding:14px}
+  .story .thumb{width:110px;height:86px;border-radius:14px;display:grid;place-items:center;font-size:44px;flex:none}
+  .story h3{font-size:18px;margin-bottom:4px}
+  .story p{color:var(--muted);font-size:14px}
+
+  /* Right panel */
+  aside{display:flex;flex-direction:column;gap:20px}
+  .profile{display:flex;align-items:center;gap:14px}
+  .profile .av{width:52px;height:52px;border-radius:50%;background:var(--orange-soft);display:grid;place-items:center;font-size:26px}
+  .profile b{font-size:18px;display:block}
+  .profile small{color:var(--muted)}
+  .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}
+  .days div{text-align:center;padding:10px 0;border-radius:12px;font-size:13px;color:var(--muted);background:var(--bg)}
+  .days div.learn{color:var(--ink)}
+  .days div.today{background:var(--orange);color:#fff;font-weight:700}
+  .days div.game{background:var(--yellow);color:var(--ink);font-weight:700}
+  .days div.explore{background:var(--green);color:#fff;font-weight:700}
+  .teacher{display:flex;align-items:center;gap:12px;padding:10px;border-radius:14px}
+  .teacher:hover{background:var(--bg)}
+  .teacher .dot{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none}
+  .teacher .t{flex:1}
+  .teacher small{color:var(--muted);display:block;margin-top:2px}
+  .world-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;color:#fff;border:0}
+  .empty{color:var(--muted);font-size:15px}
+
+  /* Responsive */
+  @media (max-width:1100px){ .app{grid-template-columns:1fr} .rail{flex-direction:row;justify-content:center;padding:10px} .rail .spacer{display:none} }
+  @media (max-width:700px){
+    .app{padding:16px;gap:16px}
+    .stats{grid-template-columns:1fr}
+    .row{grid-template-columns:1fr}
+    .ring{width:150px;height:150px}
+    .search{min-width:0;width:100%}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Left navigation -->
+  <nav class="rail" aria-label="Main">
+    <div class="logo" aria-label="TEC">TEC</div>
+    <button class="on" title="Home" aria-label="Home">🏠</button>
+    <button title="Learning days" aria-label="Learning days">📚</button>
+    <button title="My Worlds" aria-label="My Worlds">🌍</button>
+    <button title="Medals" aria-label="Medals">🏅</button>
+    <div class="spacer"></div>
+    <button title="Settings for parents" aria-label="Parent settings">⚙️</button>
+  </nav>
+
+  <!-- Centre -->
+  <main>
+    <header>
+      <h1><span>TEC</span> dashboard</h1>
+      <label class="search" aria-label="Search">🔍 <input placeholder="Search worlds and teachers" autocomplete="off"></label>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h2 id="hello">Hello, friend!</h2>
+        <p>Anis has picked a world for today. Shall we explore it together?</p>
+        <button class="btn" id="go">Continue my day</button>
+      </div>
+      <div class="anis" id="anis" aria-hidden="true"></div>
+    </section>
+
+    <section class="stats" aria-label="Summary">
+      <div class="stat o"><div class="num" id="s-days">3</div><div class="lbl">Learning days this week</div></div>
+      <div class="stat b"><div class="num" id="s-worlds">5</div><div class="lbl">Worlds visited</div></div>
+      <div class="stat y"><div class="num" id="s-medals">2</div><div class="lbl">Medals earned</div></div>
+    </section>
+
+    <div class="row">
+      <section class="panel">
+        <div class="section-title">Subjects this week <a href="#">Details</a></div>
+        <div class="ring-wrap">
+          <div class="ring" id="ring"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">Today's activity</div>
+        <div class="activity">
+          <div class="item"><div class="ico" style="background:var(--blue)">🔢</div><div class="t"><b>Shapes with Teacher Maths</b><small>Maths Corner · 5 minutes</small></div><button class="pill" style="background:var(--green)">Start</button></div>
+          <div class="item"><div class="ico" style="background:var(--red)">🔤</div><div class="t"><b>Letter sounds with Teacher English</b><small>Reading Room · 5 minutes</small></div><button class="pill" style="background:var(--orange)">Later</button></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="section-title">Story time <a href="#">All stories</a></div>
+      <div class="story">
+        <div class="thumb" style="background:var(--yellow)">🦒</div>
+        <div>
+          <h3>The friendly giraffe</h3>
+          <p>A giraffe who helps others gain understanding. About 3 minutes.</p>
+          <button class="pill" style="background:var(--orange);margin-top:8px">Read</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">My Worlds</div>
+      <div class="world-chips" id="chips"><span class="empty">No favourites yet. Pick a world on the map to add it here.</span></div>
+    </section>
+  </main>
+
+  <!-- Right: profile, week, teachers -->
+  <aside>
+    <section class="panel">
+      <div class="profile">
+        <div class="av" aria-hidden="true">🧒</div>
+        <div><b id="pname">Friend</b><small>Level 1 · TEC</small></div>
+      </div>
+      <div class="days" aria-label="Week plan">
+        <div class="learn">M</div><div class="learn">T</div><div class="learn today">W</div><div class="learn">T</div><div class="learn">F</div>
+        <div class="game">S</div><div class="explore">S</div>
+      </div>
+      <p class="empty" style="margin-top:10px">Mon–Fri learning · Saturday Game Day · Sunday Exploration Day</p>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">Your teachers</div>
+      <div id="teachers"></div>
+    </section>
+  </aside>
+</div>
+
+<script>
+/* ---- Anis (same character as the prototype) ---- */
+document.getElementById("anis").innerHTML=`
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="100" cy="190" rx="60" ry="8" fill="rgba(0,0,0,.12)"/>
+  <path d="M100 18 Q92 2 110 6 Q104 14 100 18Z" fill="#4fbf8f"/>
+  <path d="M100 22 Q120 0 136 12 Q116 26 100 22Z" fill="#4fbf8f"/>
+  <circle cx="100" cy="100" r="82" fill="#ffd27a"/>
+  <circle cx="100" cy="104" r="72" fill="#ffe6a8"/>
+  <circle cx="68" cy="112" r="10" fill="#ff9aae" opacity=".7"/>
+  <circle cx="132" cy="112" r="10" fill="#ff9aae" opacity=".7"/>
+  <circle cx="78" cy="98" r="9" fill="#2b2a4c"/><circle cx="122" cy="98" r="9" fill="#2b2a4c"/>
+  <circle cx="81" cy="95" r="3" fill="#fff"/><circle cx="125" cy="95" r="3" fill="#fff"/>
+  <path d="M86 120 Q100 134 114 120" stroke="#2b2a4c" stroke-width="5" fill="none" stroke-linecap="round"/>
+</svg>`;
+
+/* ---- Saved name, if the prototype stored one (this browser only) ---- */
+try{
+  const s=JSON.parse(localStorage.getItem("tec-l1-proto")||"{}");
+  if(s.name){
+    document.getElementById("hello").textContent=`Hello, ${s.name}!`;
+    document.getElementById("pname").textContent=s.name;
+  }
+  if(Array.isArray(s.favs)&&s.favs.length){
+    document.getElementById("chips").innerHTML=s.favs.map(id=>`<span class="chip" style="background:var(--orange)">${id}</span>`).join("");
+  }
+}catch(e){}
+
+/* ---- Subjects ring: demo values, to be replaced by real progress ---- */
+const SUBJECTS=[
+  {n:"English",v:80,c:"var(--red)"},
+  {n:"Arabic",v:65,c:"var(--blue)"},
+  {n:"Mathematics",v:90,c:"var(--orange)"},
+  {n:"Computer & Tech",v:55,c:"var(--yellow)"},
+  {n:"Tarbiyah & Character",v:70,c:"var(--green)"},
+  {n:"World Discovery",v:40,c:"#8E6CEF"}
+];
+const avg=Math.round(SUBJECTS.reduce((a,s)=>a+s.v,0)/SUBJECTS.length);
+const R=78, C=2*Math.PI*R;
+const segs=SUBJECTS.map((s,i)=>{
+  const len=C/SUBJECTS.length, gap=4;
+  const off=-i*len;
+  return `<circle r="${R}" cx="90" cy="90" fill="none" stroke="${s.c}" stroke-width="16"
+    stroke-dasharray="${(len*s.v/100-gap).toFixed(1)} ${C}" stroke-dashoffset="${off.toFixed(1)}" stroke-linecap="round" opacity=".9"/>`;
+}).join("");
+document.getElementById("ring").innerHTML=`
+  <svg viewBox="0 0 180 180" aria-label="Average progress ${avg} percent">
+    <circle r="${R}" cx="90" cy="90" fill="none" stroke="var(--line)" stroke-width="16"/>
+    ${segs}
+  </svg>
+  <div class="mid"><div><b>${avg}%</b><small>average</small></div></div>`;
+document.getElementById("legend").innerHTML=SUBJECTS.map(s=>
+  `<div><i style="background:${s.c}"></i>${s.n} <span style="color:var(--muted)">${s.v}%</span></div>`).join("");
+
+/* ---- Teachers ---- */
+const TEACH=[
+  {n:"Teacher English",s:"English",c:"var(--red)",i:"E"},
+  {n:"Teacher Arabic",s:"Arabic",c:"var(--blue)",i:"ع"},
+  {n:"Teacher Maths",s:"Mathematics",c:"var(--orange)",i:"M"},
+  {n:"Teacher Tech",s:"Computer & Technology",c:"var(--yellow)",i:"T"},
+  {n:"Teacher Character",s:"Tarbiyah & Character",c:"var(--green)",i:"C"},
+  {n:"Teacher Explorer",s:"World Discovery",c:"#8E6CEF",i:"W"}
+];
+document.getElementById("teachers").innerHTML=TEACH.map(t=>`
+  <div class="teacher"><div class="dot" style="background:${t.c}">${t.i}</div>
+  <div class="t"><b>${t.n}</b><small>${t.s}</small></div></div>`).join("");
+
+document.getElementById("go").onclick=()=>{ window.location.href="index.html"; };
+</script>
+</body>
+</html>
