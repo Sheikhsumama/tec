@@ -16,6 +16,8 @@
   body{font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
   button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
   .hidden{display:none!important}
+  :root[data-theme="dark"]{--bg:#1B1F2E;--card:#252B3D;--ink:#F4F6FB;--muted:#A7B0C4;--line:#333950;--orange-soft:#3A2A1F}
+  #theme{position:fixed;top:14px;right:14px;z-index:50;width:52px;height:52px;border-radius:50%;background:var(--card);font-size:24px;box-shadow:0 4px 0 rgba(31,42,68,.12)}
 
   /* ---------- Onboarding ---------- */
   #onboard{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center}
@@ -64,7 +66,7 @@
   .classes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;min-height:0;flex:1}
   .class{display:flex;flex-direction:column;gap:8px;cursor:pointer;min-height:0}
   .class .pic{flex:1;min-height:0;border-radius:16px;overflow:hidden;background:var(--bg)}
-  .class .pic img,.class .pic svg{width:100%;height:100%;object-fit:cover;display:block}
+  .class .pic img,.class .pic svg{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block}
   .class b{font-size:17px}
   .class small{color:var(--muted);font-size:14px}
   .tag{display:inline-block;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:700;color:#fff;align-self:flex-start}
@@ -80,7 +82,7 @@
   .week div.today{outline:3px solid var(--orange)}
   .main-teacher{display:flex;flex-direction:column;gap:8px;min-height:0;cursor:pointer}
   .main-teacher .pic{flex:1;min-height:0;border-radius:18px;overflow:hidden;background:var(--bg)}
-  .main-teacher .pic img,.main-teacher .pic svg{width:100%;height:100%;object-fit:cover;display:block}
+  .main-teacher .pic img,.main-teacher .pic svg{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block}
   .main-teacher b{font-size:20px}
   .main-teacher small{color:var(--muted);font-size:15px}
   .empty{color:var(--muted);font-size:15px}
@@ -171,12 +173,13 @@
     <div class="panel main-teacher" id="main-teacher" style="display:flex;flex-direction:column">
       <div class="title">Your main teacher</div>
       <div class="pic" id="mt-pic"></div>
-      <b>Teacher Character</b>
+      <b id="mt-name">Mr. Abdul Hadi</b>
       <small>Teaches you everything</small>
     </div>
   </aside>
 </section>
 
+<button id="theme" aria-label="Switch light and dark">🌙</button>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -210,23 +213,21 @@ function say(text,after){
 
 /* ---------- data ---------- */
 const TEACHERS={
-  arabic:  {name:"Teacher Arabic",    subject:"Arabic",                img:"assets/teachers/arabic.jpg",   color:"var(--red)",    line:"Hello! Let's learn Arabic letters together."},
-  english: {name:"Teacher English",   subject:"English",               img:"assets/teachers/english.jpg",  color:"var(--blue)",   line:"Hi! Let's read and say new words."},
-  maths:   {name:"Teacher Maths",     subject:"Mathematics",           img:"assets/teachers/maths.png",    color:"var(--orange)", line:"Hello! Let's count and find shapes."},
-  tech:    {name:"Teacher Tech",      subject:"Computer & Technology", img:null,                           color:"var(--purple)", line:"Hi! Let's explore computers and tools."},
-  char:    {name:"Teacher Character", subject:"Tarbiyah & Character",  img:"assets/teachers/tarbiyah.jpg", color:"var(--green)",  line:"Hello! I will teach you every day."}
+  arabic:  {name:"Mr. Umar",        subject:"Arabic",                img:"assets/teachers/arabic.jpg",   color:"var(--red)"},
+  english: {name:"Mr. David",       subject:"English",               img:"assets/teachers/english.jpg",  color:"var(--blue)"},
+  maths:   {name:"Mr. Muhammad",    subject:"Mathematics",           img:"assets/teachers/maths.png",    color:"var(--orange)"},
+  tech:    {name:"Mr. Jensen",      subject:"Computer & Technology", img:null,                           color:"var(--purple)"},
+  char:    {name:"Mr. Abdul Hadi",  subject:"Tarbiyah & Character",  img:"assets/teachers/tarbiyah.jpg", color:"var(--green)"}
 };
+const introOf=t=>`This is ${t.name}. He teaches ${t.subject}.`;
 const LIKES=[
-  {id:"cars",   ico:"🏎️", name:"Cars",    line:"Vroom! Let's see fast cars."},
-  {id:"animals",ico:"🦁", name:"Animals", line:"Let's meet friendly animals!"},
-  {id:"space",  ico:"🪐", name:"Space",   line:"Let's look at the stars and planets!"},
-  {id:"music",  ico:"🥁", name:"Music",   line:"Let's make some music!"},
-  {id:"art",    ico:"🎨", name:"Art",     line:"Let's paint something bright!"},
-  {id:"sports", ico:"⚽", name:"Sports",  line:"Let's run and jump!"},
-  {id:"science",ico:"🧪", name:"Science", line:"Let's mix and watch!"},
-  {id:"nature", ico:"🌻", name:"Nature",  line:"Let's watch seeds grow!"}
+  {id:"animals",ico:"🦁", name:"Animals"},
+  {id:"space",  ico:"🪐", name:"Space"},
+  {id:"cars",   ico:"🏎️", name:"Cars"},
+  {id:"art",    ico:"🎨", name:"Art"}
 ];
 const LIKE=Object.fromEntries(LIKES.map(l=>[l.id,l]));
+const likeLine=id=>`You like ${LIKE[id].name.toLowerCase()}! Nice choice.`;
 
 /* simple original teacher drawing, used where there is no photo */
 function drawTeacher(c){
@@ -260,19 +261,20 @@ document.querySelectorAll(".age").forEach(b=>b.onclick=()=>{
 });
 $("#to-likes").onclick=()=>{
   save();show($("#st-age"),false);
-  say("What do you like? Pick two or three.",()=>{renderLikes();show($("#st-likes"),true)});
+  say("What do you like? Tap everything you love.",()=>{renderLikes();show($("#st-likes"),true)});
 };
 function renderLikes(){
   $("#likes").innerHTML=LIKES.map(l=>`
     <button class="like ${state.likes.includes(l.id)?"on":""}" data-id="${l.id}">${l.ico}<small>${l.name}</small></button>`).join("");
   document.querySelectorAll(".like").forEach(b=>b.onclick=()=>{
     const id=b.dataset.id;
-    if(state.likes.includes(id))state.likes=state.likes.filter(x=>x!==id);
-    else if(state.likes.length<3)state.likes.push(id);
-    else{toast("Pick up to three");return}
-    renderLikes();
+    if(state.likes.includes(id)){state.likes=state.likes.filter(x=>x!==id)}
+    else{state.likes.push(id);say(likeLine(id))}
+    save();
+    b.classList.toggle("on",state.likes.includes(id));
+    $("#to-dash").disabled=state.likes.length<1;
   });
-  $("#to-dash").disabled=state.likes.length<2;
+  $("#to-dash").disabled=state.likes.length<1;
 }
 $("#to-dash").onclick=()=>{
   state.done=true;save();
@@ -300,10 +302,11 @@ function showDashboard(){
       <span class="tag" style="background:${t.color}">Level 1</span>
       <b>${t.name}</b><small>${t.subject}</small>
     </div>`}).join("");
-  document.querySelectorAll(".class").forEach(c=>c.onclick=()=>say(TEACHERS[c.dataset.k].line));
+  document.querySelectorAll(".class").forEach(c=>c.onclick=()=>say(introOf(TEACHERS[c.dataset.k])));
 
   $("#mt-pic").innerHTML=picOf(TEACHERS.char);
-  $("#main-teacher").onclick=()=>say(TEACHERS.char.line);
+  $("#mt-name").textContent=TEACHERS.char.name;
+  $("#main-teacher").onclick=()=>say(introOf(TEACHERS.char)+" He will teach you every day.");
 
   // Monday-first week; today is highlighted from the device clock
   const today=new Date().getDay();
@@ -320,8 +323,20 @@ function showDashboard(){
     return `<svg viewBox="0 0 140 140"><circle r="${R}" cx="70" cy="70" fill="none" stroke="var(--line)" stroke-width="16"/>${arcs}</svg><div class="mid-t">7</div>`;
   })();
 
-  $("#hero-anis").onclick=()=>say(`Hello${state.name?", "+state.name:""}! Let's learn together.`);
+  $("#hero-anis").onclick=()=>say(`Hello${state.name?", "+state.name:""}! I am Anis. Let's learn together.`);
+
+  // Anis says the child's choices clearly
+  if(state.likes.length)say(`You like ${state.likes.map(id=>LIKE[id].name.toLowerCase()).join(" and ")}. Let's learn with those!`);
 }
+
+/* ---------- theme ---------- */
+function applyTheme(t){
+  document.documentElement.dataset.theme=t;
+  $("#theme").textContent=t==="dark"?"☀️":"🌙";
+  try{localStorage.setItem("tec-theme",t)}catch(e){}
+}
+$("#theme").onclick=()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");
+applyTheme(localStorage.getItem("tec-theme")||"light");
 
 /* ---------- start ---------- */
 if(state.done&&state.name)showDashboard();
