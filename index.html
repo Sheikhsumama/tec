@@ -18,6 +18,7 @@
   .hidden{display:none!important}
   :root[data-theme="dark"]{--bg:#1B1F2E;--card:#252B3D;--ink:#F4F6FB;--muted:#A7B0C4;--line:#333950;--orange-soft:#3A2A1F}
   #theme{position:fixed;top:14px;right:14px;z-index:50;width:52px;height:52px;border-radius:50%;background:var(--card);font-size:24px;box-shadow:0 4px 0 rgba(31,42,68,.12)}
+  #theme.inhero{position:static;flex:none;margin-left:auto;background:rgba(255,255,255,.22);box-shadow:none}
 
   /* ---------- Onboarding ---------- */
   #onboard{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center}
@@ -120,7 +121,7 @@
 <!-- ============ DASHBOARD ============ -->
 <section id="dash" class="hidden">
   <div class="main">
-    <div class="hero">
+    <div class="hero" id="hero">
       <img class="anis-img" id="hero-anis" src="assets/anis.jpg" alt="Anis">
       <div>
         <h1 id="hello">Hello!</h1>
@@ -244,6 +245,7 @@ const picOf=t=>t.img?`<img src="${t.img}" alt="${t.name}">`:drawTeacher("#8E6CEF
 /* ---------- onboarding ---------- */
 function startOnboarding(){
   show($("#onboard"),true);show($("#dash"),false);
+  document.body.appendChild($("#theme"));$("#theme").classList.remove("inhero");
   say("Hello! I am Anis. I am your learning friend.",()=>{
     say("What is your name?",()=>show($("#st-name"),true));
   });
@@ -284,6 +286,7 @@ $("#to-dash").onclick=()=>{
 /* ---------- dashboard ---------- */
 function showDashboard(){
   show($("#onboard"),false);show($("#dash"),true);
+  $("#hero").appendChild($("#theme"));$("#theme").classList.add("inhero");
   const name=state.name||"Friend";
   $("#hello").textContent=`Hello, ${name}!`;
   $("#pname").textContent=name;
