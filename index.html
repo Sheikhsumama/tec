@@ -297,7 +297,7 @@ function showDashboard(){
   $("#chips").innerHTML=state.likes.length
     ? state.likes.map((id,i)=>`<button class="chip" style="background:${colors[i%3]}" data-id="${id}"><span class="i">${LIKE[id].ico}</span>${LIKE[id].name}</button>`).join("")
     : `<span class="empty">No worlds chosen yet.</span>`;
-  document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>say(LIKE[b.dataset.id].line));
+  document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>say(likeLine(b.dataset.id)));
 
   $("#classes").innerHTML=["arabic","english","maths","tech"].map(k=>{const t=TEACHERS[k];return `
     <div class="class" data-k="${k}">
