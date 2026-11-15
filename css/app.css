@@ -202,3 +202,31 @@ a{color:inherit}
 }
 .room-teacher svg{width:100%;height:auto;border-radius:14px;box-shadow:var(--shadow)}
 .board-tap{font-size:clamp(10px,1.5cqw,13px);opacity:.85}
+
+/* ---------- Stage 3 (completion): board types, desk activities, shared classroom parts ---------- */
+.board{container-type:size}
+.board-face{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8cqw;width:100%;height:100%;min-height:0}
+.bf-big{font-size:clamp(20px,5.2cqw,46px);font-weight:800;line-height:1.1;text-align:center}
+.bf-big.ar{font-family:"Noto Naskh Arabic","Geeza Pro","Traditional Arabic",serif;font-size:clamp(20px,6cqw,52px)}
+.bf-pic{font-size:clamp(18px,3.6cqw,30px);line-height:1}
+.bf-word{font-size:clamp(11px,2.1cqw,17px);font-weight:700;line-height:1.25;text-align:center;padding:0 2cqw}
+.board--slate{background:#2F4A44;border:6px solid #B98A3E}
+.board--paper{background:#FFFFFF;color:#22395F;border:6px solid #8A5A2B;background-image:linear-gradient(#E7EEF8 1px,transparent 1px),linear-gradient(90deg,#E7EEF8 1px,transparent 1px);background-size:4.5cqw 4.5cqw}
+.board--screen{background:#0B1530;color:#CFF3FF;border:6px solid #5EC8FF}
+.board--night{background:#F2E6C9;color:#1D3A4F;border:6px solid #8A5A2B}
+.board--paper .board-tap,.board--night .board-tap,.board--screen .board-tap,.board--slate .board-tap{color:inherit}
+.desk-area{display:grid;gap:12px}
+.desk-prompt{font-size:clamp(15px,2vw,18px);font-weight:700;color:var(--ink);text-align:center}
+.desk-tile small,.desk-tile b{display:block}
+.desk-tile small{color:var(--muted);font-size:12px;font-weight:600}
+.dlg-item small{display:block;color:var(--muted);font-size:12px}
+.mx-tray{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:90px;align-items:center}
+.mx-apple{font-size:44px;background:var(--card);border:3px solid var(--line);border-radius:50%;width:76px;height:76px;cursor:pointer;padding:0;display:grid;place-items:center}
+.mx-apple.is-ok{border-color:var(--green,#2BA56B);background:#E9F8EF;transform:scale(1.04)}
+.tech-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.tech-btn,.tech-lamp{background:var(--card);border:3px solid var(--line);border-radius:20px;padding:16px 22px;min-width:150px;min-height:130px;font-size:48px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink);font:inherit}
+.tech-btn{cursor:pointer;font-size:48px}
+.tech-btn b,.tech-lamp b{font-size:15px}
+.tech-lamp.is-on{border-color:#F7B500;background:#FFF6D6}
+.teacher-tbd{width:100%;aspect-ratio:3/4;border:3px dashed var(--muted);border-radius:14px;display:grid;place-items:center;font-size:clamp(28px,6cqw,56px);color:var(--muted);background:rgba(255,255,255,.6)}
+.hotspot span{pointer-events:none}

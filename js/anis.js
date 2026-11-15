@@ -4,12 +4,12 @@ window.TEC = window.TEC || {};
 TEC.anis = (function(){
   var img = 'assets/anis.jpg';
   var token = 0;
-  function speak(text){
+  function speak(text, lang){
     if (!('speechSynthesis' in window)) return;   // browser voice is a temporary fallback
     try {
       speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.9; u.pitch = 1.15; u.lang = 'en-GB';
+      u.rate = 0.9; u.pitch = 1.15; u.lang = lang || 'en-GB';
       speechSynthesis.speak(u);
     } catch (e) { /* speech unavailable */ }
   }

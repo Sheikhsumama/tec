@@ -48,3 +48,22 @@ Status key: **Supplied** = provided and in use · **Placeholder** = temporary, r
 Replacing a teacher portrait: put the new file in assets/teachers/ and change `img` in js/data.js.
 Replacing the English room art: edit the `scene()` function in js/rooms/english.js.
 Teacher assignments and room titles are configured in `TEC.classrooms` (js/data.js).
+
+## Stage 3 (completion): the five remaining classrooms
+
+| Asset | Where | Status |
+|---|---|---|
+| Arabic room scene (arches, rug, plaque, posters) | js/rooms/arabic.js `scene()` | Original placeholder art |
+| Mathematics room scene (number line, clock, charts, table) | js/rooms/mathematics.js `scene()` | Original placeholder art |
+| Technology lab scene (screen board, robot, charts, desks) | js/rooms/computer.js `scene()` | Original placeholder art |
+| Tarbiyah room scene (window, family frames, gratitude wall, cushion) | js/rooms/tarbiyah.js `scene()` | Original placeholder art |
+| World Explorer scene (stars, globe, charts) | js/rooms/world.js `scene()` | Original placeholder art |
+| Mr. Umar portrait | assets/teachers/arabic.jpg | Supplied |
+| Mr. Muhammad portrait | assets/teachers/maths.png | Supplied |
+| Mr. Abdul Hadi portrait | assets/teachers/tarbiyah.jpg | Supplied |
+| Mr. Jensen | placeholder disc (in code) | PLACEHOLDER, not a final portrait |
+| World Discovery teacher | none (`teacher: null`) | NOT CONFIRMED, slot shows "Teacher to be confirmed" |
+| Emoji used in charts and activities | text in the scenes and lessons | Temporary; replace with illustrated artwork later |
+
+How to replace a room scene: edit `scene()` in the room's file; the layout and hotspot positions are shared with the frame in js/rooms/common.js.
+How to change a teacher: edit `teacher` in the room file (a key from `TEC.teachers` in js/data.js), or set it to `null`.

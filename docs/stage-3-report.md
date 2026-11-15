@@ -1,42 +1,50 @@
-# Stage 3 report: Classroom District and English Studio
+# Stage 3 report: Classroom District and the six classrooms
 
 ## What was built
-- **Classroom District** (#/district): a corridor with six doors, each with its title, subject and assigned teacher. Only English Studio opens. The other five show "Opens in a later update" and do not open.
-- **English Studio** (#/class/english), the reference classroom:
-  - Drawn in perspective: ceiling, left and right walls, back wall with window and chalkboard, floor, desks, plant. Mr. David stands at the front.
-  - **Functional board**: shows the current lesson (letter, picture, word). Tap the board to hear the sound and word. Next/previous lesson changes the board and the desk objects.
-  - **Wall charts** (three hotspots): alphabet chart and vowel chart (left wall), picture word chart (right wall). Each opens a panel; tapping a picture speaks the word.
-  - **Desk activity**: three lessons (A, B, C). Tapping the correct object confirms it and saves progress. Tapping a wrong object gives a gentle "try another" response. No marks, percentages, timers or exams.
-  - **Ask Anis for a hint**: scripted hint for the current lesson.
-  - **Navigation**: the top bar always shows the room name, "← Classroom District" and "School Home".
-- **School Home**: new "My classrooms" card linking to the District.
-- **Progress**: stored per room in the student's record (`progress.english`), so lesson and completed objects survive a reload.
+- **Classroom District** (#/district): a corridor with six doors. Each door shows the room title, subject, assigned teacher and symbol. All six open.
+- **Six classrooms**, each with its own scene, layout, wall charts, board and lessons. Each lives in its own file in `js/rooms/`:
 
-## Tested (headless Chromium, desktop 1280px and phone 390px)
-- District shows six doors; only English links out.
-- English room: three hotspots, four desk tiles, wall-chart dialog opens and closes.
-- A correct object is saved after tapping; the board advances with "next".
-- Back to District works; School Home shows the classrooms card.
-- No horizontal overflow at 390px. No console errors.
-- Visual check of both screens by screenshot.
+| Room (district title) | File | Teacher (from data.js) | Scene and board | Lessons (3–4 each) |
+|---|---|---|---|---|
+| English Studio | js/rooms/english.js | Mr. David | Wooden classroom, chalkboard, alphabet/vowel/picture-word charts | Letter A (pick), letter B (pick), letter C (pick) |
+| Arabic Garden | js/rooms/arabic.js | Mr. Umar | Cream and gold room, arched windows, rug, lantern-free calligraphy plaque, Arabic alphabet and greetings posters | Alif, Ba, "Hello" (السلام عليكم), "Thank you" (شكراً) |
+| Mathematics Workshop | js/rooms/mathematics.js | Mr. Muhammad | Bright blue and green room, number line 0–10 on the back wall, clock, shape and number charts, counting table | Add (3 + 2 apples, count by tapping), Shapes (find the circle), Pattern (red, blue, red, blue, next) |
+| Technology Laboratory | js/rooms/computer.js | Mr. Jensen (placeholder portrait) | Dark blue lab, the large screen is the board, robot on a shelf, keyboard/mouse chart, sequence chart | Parts (find the mouse), Cause and effect (press the button, the light comes on), Order (plug in, press start, robot waves) |
+| Tarbiyah Garden | js/rooms/tarbiyah.js | Mr. Abdul Hadi | Peach room, window with a tree, family frames, gratitude wall, sharing cushion, plant | Sharing (two toys, none for a friend), Thank you, Honesty (the broken cup) |
+| World Explorer Studio | js/rooms/world.js | **None confirmed** (neutral placeholder shown) | Night-sky room with stars, globe, planets and animals charts | Land and water, Animal homes, Sun and Moon |
 
-## Not done yet (honest status)
-- Arabic Garden, Mathematics Workshop, Technology Laboratory, Tarbiyah Garden and World Explorer Studio are not built. They are listed in the District and marked "later".
-- The English room art is original, simple SVG. It is a quality standard placeholder, not final illustration.
-- Teacher personalities and voices are not invented. Lines shown are the introductions only.
-- Anis and teacher replies are scripted. No AI or ElevenLabs connection is active.
-- Speech uses the browser voice (speechSynthesis) as a temporary fallback.
-- World Discovery has no confirmed teacher. Tarbiyah and World Discovery are proposed learning areas, not confirmed compulsory subjects.
-- Mr. Jensen uses a placeholder disc, not a final portrait.
+- **Shared renderer** (`js/views/classroom.js`): draws the scene, hotspots, board, teacher and activities from the room file. Lessons either use the default "tap the right object" activity or their own `render()` function. Progress is saved per room.
+- **Shared perspective helpers** (`js/rooms/common.js`): one 1200 × 675 frame, so all six rooms share the same geometry but differ in colour, furniture and charts.
+- **Board**: changes with each lesson, shows text, numbers, shapes or pictures, and is tappable to hear its content. Some lessons update the board during the activity (for example "3 + 2 = 5").
+- **Wall charts**: each opens a closer view. Tapping a picture speaks it, and Arabic items are spoken with the Arabic language setting.
+- **School Home**: the "My classrooms" card links to the District.
+
+## What works (tested)
+- All six rooms load at 1280 px and 390 px wide, with no horizontal overflow and no console errors.
+- Every room has three wall hotspots, and each opens its dialog.
+- Lesson navigation (next, previous, board tap, hint) works in every room.
+- Activities tested:
+  - Arabic: choosing the lion (alif) is saved.
+  - Mathematics: adding apples shows 3 + 2, counting all five marks the total done, and the shape lesson saves.
+  - Technology: pressing the button turns the lamp on; choosing step 2 first is refused; steps 1, 2, 3 in order update the board.
+  - Tarbiyah: the sharing choice is saved.
+  - World: the water choice is saved, and the teacher placeholder is shown.
+- Progress survives a page reload.
+
+## What remains incomplete or provisional
+- **Room art is original simple SVG**, not final illustration. It is designed to be replaced (see the manifest).
+- **Mr. Jensen's portrait is a placeholder disc.** It must not be used as his final portrait.
+- **World Explorer Studio has no confirmed teacher.** Its teacher slot is empty and configurable (`teacher: null`). No teacher is invented.
+- **Anis and teacher replies are scripted.** No AI or ElevenLabs connection is active. Speech uses the browser voice as a temporary fallback.
+- **Arabic pronunciation** depends on whether the browser has an Arabic voice. If it does not, the spoken sound will be missing or wrong. Arabic letter names are taught as scripted content and should be checked by a qualified Arabic teacher.
+- **Tarbiyah and World Discovery** are proposed learning areas. Their compulsory status is not declared final.
+- **Room names**: the District uses the names already shown in Stage 3 (Arabic Garden, Mathematics Workshop, Technology Laboratory, Tarbiyah Garden, World Explorer Studio). The completion spec uses longer names (Arabic Classroom, Mathematics Classroom, Computer & Technology Lab, Tarbiyah & Character Room, World Discovery Room). They can be changed in `TEC.classrooms` in `js/data.js`.
+- **Mobile**: the room scales with its frame (it does not shrink the desktop layout). Hotspot labels may be small on very narrow screens.
+- No screen-time, video, internet or social features are used. There are no marks, percentages, leaderboards or timers.
 
 ## How to run
-Open `index.html` in a browser (works from a file, or upload the folder to any static host such as Netlify). No build step.
+Open `index.html` in a browser, or upload the folder to a static host (for example Netlify). There is no build step.
 
 ## Files changed in this stage
-- js/data.js (TEC.classrooms), js/store.js (progress), js/router.js (district and class views), js/views/home.js (My classrooms card)
-- js/views/district.js, js/views/classroom.js, js/rooms/english.js (new)
-- css/app.css (Stage 3 section), index.html (script tags)
-- docs/asset-manifest.md (Stage 3 section), docs/stage-3-report.md (this file)
-
-## Next step
-Stage 3 continues with the five remaining rooms, each with its own scene and layout, then integration testing.
+- New: `js/rooms/common.js`, `js/rooms/arabic.js`, `js/rooms/mathematics.js`, `js/rooms/computer.js`, `js/rooms/tarbiyah.js`, `js/rooms/world.js`, `js/views/district.js`, `js/views/classroom.js`, `js/rooms/english.js`
+- Changed: `js/data.js` (rooms ready), `js/anis.js` (speech language), `js/store.js` (progress), `js/router.js` (routes), `js/views/home.js` (My classrooms card), `css/app.css` (room and board styles), `index.html` (script tags), `docs/asset-manifest.md`, `docs/stage-3-report.md`.
