@@ -1,233 +1,167 @@
-# TEC World: asset manifest (Phase A, asset-first)
+# TEC World: asset manifest
 
-Status: planning document. No artwork is drawn in code. Artwork arrives progressively and is placed by file name.
-Reference: the supplied TEC World Master Map (flat painted illustration). It is the geographical and visual reference only. It is never used as a background image.
+Generated from the same data as `js/world/asset-manifest.js`. Edit the data there, not this file.
 
-## 1. Coordinate system and layout
+Status: planning only. No world artwork is drawn in code. Placeholders are shown only as clearly marked outlines and are never presented as final art. The overview is not finalised until Batch 1 artwork arrives.
 
-- World canvas: **1600 × 900 world units** (16:9). Every position below is in world units, origin at top-left.
-- Positions are approximate, read from the master map, and must be checked against it in Phase B. The map is the authority.
-- Each asset is placed by its **anchor**: the bottom-centre of its footprint (where it touches the ground). Anchors make depth sorting and alignment consistent at any screen size.
-- Artwork is supplied at **2× the world size** (retina). Example: a 560 × 320 unit island is supplied at 1120 × 640 px.
+## Global rules
 
-| Island | Centre (approx.) | Footprint (approx.) | Position relative to Heartland |
-|---|---|---|---|
-| Heartland (central, home) | 800, 330 | 380 × 300 | centre |
-| Learning Quarter | 400, 220 | 560 × 320 | top left |
-| Discovery Isles | 1235, 220 | 520 × 320 | top right |
-| Game Garden | 280, 515 | 520 × 330 | left |
-| Exploration Valley | 1280, 515 | 560 × 340 | right |
-| Growth Garden | 800, 745 | 520 × 280 | bottom, south of Heartland |
+- **Format:** WebP with alpha (`webp`). Keep the source PNG where possible so files can be re-exported.
+- **Size:** supply each file at **2× the world size** (retina). World size = pixel size ÷ 2. Long edge maximum 2048 px.
+- **Transparency:** real soft alpha for every file except `ocean-tile`, which is opaque and seamless. No baked background, and no drop shadows except the separate `shadow-*` files.
+- **Anchor:** buildings anchor at the **bottom centre** of their footprint. Terrain, shadows, bridges, backdrops and effects anchor at their **centre**.
+- **Positions:** world units on a 1600 × 900 canvas, origin top-left. Where a position is marked *estimated*, it was read from the master map and is confirmed in Phase B.
+- **Animation:** anything that moves or glows is its own file (never baked into the base building). Trunk and canopy are separate.
+- **Light:** upper-left light direction and one palette, taken from the master map.
+- **People:** no real or identifiable people in any asset.
+- **Naming:** lower-case, hyphens, exactly the file name shown below.
+- **Replacement:** replace a file with the same name and the world updates with no code change.
 
-Connections (drawn as code-rendered bridges and paths, but built from artwork pieces):
-- Knowledge Bridge: Heartland → Learning Quarter (north-west).
-- Curiosity Bridge: Heartland → Discovery Isles (north-east).
-- Play Bridge: Heartland → Game Garden (west).
-- Wonder Bridge: Heartland → Exploration Valley (east).
-- Growth Walk: Heartland → Growth Garden (south, a stone path over shallow water).
-
-## 2. File and folder structure
+## Folder structure
 
 ```
 assets/world/
-  ocean/            tileable water, foam edges
-  islands/          one terrain file per island (+ shadow file)
-  buildings/        one file per building or landmark (transparent)
-  bridges/          bridge pieces (see section 5)
-  paths/            walk and path pieces
-  nature/           trees, bushes, flowers, rocks, lamps (shared)
-  animated/         separate layers for things that move or glow
-  wildlife/         boats, clouds, birds, balloon (shared)
-  ui/               map plates and title art (labels stay as code)
+  islands/      terrain and shadow files (6 + 6)
+  buildings/    one file per building or landmark
+  bridges/      four bridge spans
+  paths/        Growth Walk and campus path pieces
+  nature/       trees, bushes, flowers, rocks, lamps, benches, backdrop
+  animated/     separate glow, sway and flow layers
+  wildlife/     clouds, boats, balloon, gulls
+  ocean/        ocean tile and foam edge
+  ui/           title plate, compass rose, scroll banner
 ```
 
-Style: one folder per category keeps files easy to replace. File names are lower-case with hyphens (see section 7).
+## Batch 1: complete world overview (needed first)
 
-## 3. Island terrain (one file per island)
+| ID | File | Px (w×h) | World (w×h) | Aspect | Transparent | Animated | Anchor | Position(s) (world x,y) | Use |
+|---|---|---|---|---|---|---|---|---|---|
+| `terrain-heartland` | `islands/heartland.webp` | 760×600 | 380×300 | 1.267 | yes | no | centre | (800, 330) | Heartland central island terrain and coastline (home) |
+| `terrain-learning-quarter` | `islands/learning-quarter.webp` | 1120×640 | 560×320 | 1.75 | yes | no | centre | (400, 220) | Learning Quarter terrain, campus terraces, Knowledge Bridge landing |
+| `terrain-discovery-isles` | `islands/discovery-isles.webp` | 1040×640 | 520×320 | 1.625 | yes | no | centre | (1235, 220) | Discovery Isles terrain with two cliffs and waterfall edges |
+| `terrain-game-garden` | `islands/game-garden.webp` | 1040×660 | 520×330 | 1.576 | yes | no | centre | (280, 515) | Game Garden terrain, courtyard ground, Play Bridge landing |
+| `terrain-exploration-valley` | `islands/exploration-valley.webp` | 1120×680 | 560×340 | 1.647 | yes | no | centre | (1280, 515) | Exploration Valley terrain, valley floor and gorge edge |
+| `terrain-growth-garden` | `islands/growth-garden.webp` | 1040×560 | 520×280 | 1.857 | yes | no | centre | (800, 745) | Growth Garden round island, central ring, Growth Walk landing |
+| `shadow-heartland` | `islands/shadow-heartland.webp` | 760×600 | 380×300 | 1.267 | yes | no | centre | (800, 330) | Contact shadow under Heartland |
+| `shadow-learning-quarter` | `islands/shadow-learning-quarter.webp` | 1120×640 | 560×320 | 1.75 | yes | no | centre | (400, 220) | Contact shadow under Learning Quarter |
+| `shadow-discovery-isles` | `islands/shadow-discovery-isles.webp` | 1040×640 | 520×320 | 1.625 | yes | no | centre | (1235, 220) | Contact shadow under Discovery Isles |
+| `shadow-game-garden` | `islands/shadow-game-garden.webp` | 1040×660 | 520×330 | 1.576 | yes | no | centre | (280, 515) | Contact shadow under Game Garden |
+| `shadow-exploration-valley` | `islands/shadow-exploration-valley.webp` | 1120×680 | 560×340 | 1.647 | yes | no | centre | (1280, 515) | Contact shadow under Exploration Valley |
+| `shadow-growth-garden` | `islands/shadow-growth-garden.webp` | 1040×560 | 520×280 | 1.857 | yes | no | centre | (800, 745) | Contact shadow under Growth Garden |
+| `ocean-tile` | `ocean/ocean-tile.webp` | 512×512 | 256×256 | 1 | no (opaque) | yes: ocean-drift | centre | (800, 450) | Seamless water tile repeated across the whole world (opaque) |
+| `foam-edge` | `ocean/foam-edge.webp` | 256×64 | 128×32 | 4 | yes | yes: foam-pulse | centre | (800, 450) | Shoreline foam strip, repeated along coastlines by code |
+| `tec-academy` | `buildings/tec-academy.webp` | 760×620 | 380×310 | 1.226 | yes | yes: window-glow | bottom-centre | (804, 316) | TEC Academy, main castle of Heartland |
+| `compass-tower` | `buildings/compass-tower.webp` | 280×640 | 140×320 | 0.438 | yes | yes: beacon-glow | bottom-centre | (800, 250) | Compass Tower, behind the academy |
+| `anis-home` | `buildings/anis-home.webp` | 300×240 | 150×120 | 1.25 | yes | yes: window-glow | bottom-centre | (660, 306) | Anis's Home cottage |
+| `world-map-pavilion` | `buildings/world-map-pavilion.webp` | 320×260 | 160×130 | 1.231 | yes | yes: globe-glow | bottom-centre | (935, 316) | World Map Pavilion (globe dome) |
+| `welcome-plaza-fountain` | `buildings/welcome-plaza-fountain.webp` | 220×200 | 110×100 | 1.1 | yes | no | bottom-centre | (800, 352) | Welcome Plaza fountain (water particles are code) |
+| `bridge-knowledge` | `bridges/knowledge-bridge.webp` | 480×200 | 240×100 | 2.4 | yes | no | centre | (545, 250) (655, 265) | Knowledge Bridge, Heartland to Learning Quarter (span stretched between the two points) |
+| `bridge-curiosity` | `bridges/curiosity-bridge.webp` | 480×200 | 240×100 | 2.4 | yes | no | centre | (965, 258) (1090, 245) | Curiosity Bridge, Heartland to Discovery Isles |
+| `bridge-play` | `bridges/play-bridge.webp` | 440×200 | 220×100 | 2.2 | yes | no | centre | (460, 440) (612, 411) | Play Bridge, Heartland to Game Garden |
+| `bridge-wonder` | `bridges/wonder-bridge.webp` | 480×220 | 240×110 | 2.182 | yes | no | centre | (976, 421) (1100, 450) | Wonder Bridge, Heartland to Exploration Valley (sags slightly) |
+| `growth-walk-segment` | `paths/growth-walk-segment.webp` | 200×120 | 100×60 | 1.667 | yes | no | centre | (794, 510) | Growth Walk stone path, tiled between Heartland and Growth Garden (x 794, y 450 to 565) |
+| `growth-walk-end` | `paths/growth-walk-end.webp` | 240×160 | 120×80 | 1.5 | yes | no | centre | (794, 575) | Growth Walk landing at Growth Garden |
+| `growth-tree` | `buildings/growth-tree.webp` | 460×480 | 230×240 | 0.958 | yes | yes: growth-canopy-sway | bottom-centre | (800, 600) | Growth tree, central landmark of Growth Garden |
+| `islet-1` | `nature/islet-1.webp` | 200×120 | 100×60 | 1.667 | yes | no | centre | (80, 290) | Small islet, north-west ocean |
+| `islet-2` | `nature/islet-2.webp` | 200×120 | 100×60 | 1.667 | yes | no | centre | (1510, 200) | Small islet, north-east ocean |
+| `islet-3` | `nature/islet-3.webp` | 200×120 | 100×60 | 1.667 | yes | no | centre | (1530, 300) (60, 640) (1560, 640) | Small islets, east and south ocean (may use islet-1 or islet-2 instead) |
+| `mountains-backdrop` | `nature/mountains-backdrop.webp` | 1800×360 | 900×180 | 5 | yes | no | centre | (800, 80) | Mountain range behind the islands, along the top edge |
 
-Each island needs: the **terrain file** (land, cliffs, beach, vegetation silhouette, transparent outside the coastline) and a separate **contact shadow** file (soft shadow on water, transparent).
+## Batch 2: Learning Quarter detail
 
-| # | Island | Terrain file | Size (px, 2×) | Notes |
-|---|---|---|---|---|
-| 1 | Heartland | islands/heartland.webp | 760 × 600 | Central plateau, plaza ground, Anis's cottage area, the Compass Tower hill |
-| 2 | Learning Quarter | islands/learning-quarter.webp | 1120 × 640 | Campus terraces, paths, room for six buildings, Knowledge Bridge landing |
-| 3 | Discovery Isles | islands/discovery-isles.webp | 1040 × 640 | Two cliffs, waterfall edges, space for six geographical clusters |
-| 4 | Game Garden | islands/game-garden.webp | 1040 × 660 | Courtyard ground, rounded garden terraces, Play Bridge landing |
-| 5 | Exploration Valley | islands/exploration-valley.webp | 1120 × 680 | Mountain foot, valley floor, river gorge edge, two waterfall edges |
-| 6 | Growth Garden | islands/growth-garden.webp | 1040 × 560 | Round island, central ring, Growth Walk landing |
+| ID | File | Px (w×h) | World (w×h) | Aspect | Transparent | Animated | Anchor | Position(s) (world x,y) | Use |
+|---|---|---|---|---|---|---|---|---|---|
+| `bld-english-studio` | `buildings/english-studio.webp` | 300×260 | 150×130 | 1.154 | yes | yes: window-glow | bottom-centre | (260, 205) | English Studio, red-brick building |
+| `bld-arabic-classroom` | `buildings/arabic-classroom.webp` | 300×280 | 150×140 | 1.071 | yes | yes: window-glow | bottom-centre | (350, 180) *est.* | Arabic Classroom, gold domes and arches (estimated position) |
+| `bld-mathematics-workshop` | `buildings/mathematics-workshop.webp` | 300×260 | 150×130 | 1.154 | yes | yes: window-glow | bottom-centre | (430, 200) *est.* | Mathematics Workshop, colourful building with clock (estimated position) |
+| `bld-technology-lab` | `buildings/technology-lab.webp` | 300×260 | 150×130 | 1.154 | yes | yes: window-glow | bottom-centre | (510, 175) *est.* | Computer & Technology Lab, modern building (estimated position) |
+| `bld-tarbiyah-house` | `buildings/tarbiyah-house.webp` | 280×240 | 140×120 | 1.167 | yes | yes: window-glow | bottom-centre | (575, 205) *est.* | Tarbiyah & Character House, cottage with garden (estimated position) |
+| `bld-world-discovery-centre` | `buildings/world-discovery-centre.webp` | 300×280 | 150×140 | 1.071 | yes | yes: window-glow | bottom-centre | (440, 140) *est.* | World Discovery Centre, observatory dome (estimated position, back row) |
+| `campus-gate` | `buildings/campus-gate.webp` | 260×200 | 130×100 | 1.3 | yes | no | bottom-centre | (560, 300) *est.* | Campus entrance gate at the Knowledge Bridge landing (estimated) |
+| `campus-path-tile` | `paths/campus-path-tile.webp` | 128×128 | 64×64 | 1 | yes | no | centre | (400, 260) | Seamless campus path tile, tiled across Learning Quarter |
 
-Shadows: islands/shadow-heartland.webp, shadow-learning-quarter.webp, and so on (same size, low opacity, no detail).
+## Batch 3: other island landmarks
 
-**Coastline must be part of the terrain file** (foam is a separate animated layer, see section 6). Do not combine two islands in one file.
+| ID | File | Px (w×h) | World (w×h) | Aspect | Transparent | Animated | Anchor | Position(s) (world x,y) | Use |
+|---|---|---|---|---|---|---|---|---|---|
+| `discovery-globe` | `buildings/discovery-globe.webp` | 420×380 | 210×190 | 1.105 | yes | yes: globe-glow | bottom-centre | (1190, 140) *est.* | Globe observatory, central landmark of Discovery Isles (estimated) |
+| `cluster-pavilion-a` | `buildings/cluster-pavilion-a.webp` | 180×160 | 90×80 | 1.125 | yes | no | bottom-centre | (1110, 200) (1270, 200) (1150, 260) | Cluster pavilion, three of six clusters (shared base) |
+| `cluster-pavilion-b` | `buildings/cluster-pavilion-b.webp` | 180×160 | 90×80 | 1.125 | yes | no | bottom-centre | (1190, 210) (1240, 265) (1320, 255) | Cluster pavilion, other three clusters (shared base) |
+| `chess-courtyard` | `buildings/chess-courtyard.webp` | 460×340 | 230×170 | 1.353 | yes | no | bottom-centre | (185, 420) *est.* | Giant chess courtyard, Game Garden (estimated) |
+| `puzzle-pavilion` | `buildings/puzzle-pavilion.webp` | 240×240 | 120×120 | 1 | yes | no | bottom-centre | (285, 395) *est.* | Puzzle Pavilion, Game Garden (estimated) |
+| `matching-garden` | `buildings/matching-garden.webp` | 260×180 | 130×90 | 1.444 | yes | yes: flower-sway | bottom-centre | (300, 500) *est.* | Matching Games Garden (estimated) |
+| `block-workshop` | `buildings/block-workshop.webp` | 280×260 | 140×130 | 1.077 | yes | no | bottom-centre | (365, 430) *est.* | Building-Block Workshop, giant cube (estimated) |
+| `story-area` | `buildings/story-area.webp` | 260×240 | 130×120 | 1.083 | yes | yes: lantern-glow | bottom-centre | (230, 500) *est.* | Story and Memory Games Area (estimated) |
+| `botanical-glasshouse` | `buildings/botanical-glasshouse.webp` | 360×280 | 180×140 | 1.286 | yes | yes: window-glow | bottom-centre | (1290, 480) *est.* | Botanical Gardens glasshouse, Exploration Valley (estimated) |
+| `animal-area` | `buildings/animal-area.webp` | 300×220 | 150×110 | 1.364 | yes | no | bottom-centre | (1420, 470) *est.* | Animal Observation Area enclosure (estimated) |
+| `weather-station` | `buildings/weather-station.webp` | 200×300 | 100×150 | 0.667 | yes | yes: vane-turn | bottom-centre | (1180, 430) *est.* | Water and Weather Station tower (estimated) |
+| `trail-head` | `buildings/trail-head.webp` | 160×160 | 80×80 | 1 | yes | no | bottom-centre | (1200, 520) *est.* | Nature Trails sign (estimated) |
+| `miniature-landscape` | `buildings/miniature-landscape.webp` | 300×220 | 150×110 | 1.364 | yes | no | bottom-centre | (1350, 540) *est.* | Miniature Geography Landscape diorama (estimated) |
+| `observation-pavilion` | `buildings/observation-pavilion.webp` | 220×220 | 110×110 | 1 | yes | no | bottom-centre | (1240, 380) *est.* | Outdoor Observation Pavilion with telescope (estimated) |
+| `growth-lanterns` | `buildings/growth-lanterns.webp` | 160×200 | 80×100 | 0.8 | yes | yes: lantern-glow | bottom-centre | (880, 690) *est.* | Achievement lanterns, Growth Garden (no marks shown) |
+| `kindness-bench` | `buildings/kindness-bench.webp` | 200×140 | 100×70 | 1.429 | yes | no | bottom-centre | (700, 700) *est.* | Kindness bench with heart stones, Growth Garden |
+| `plot-set` | `nature/plot-set.webp` | 200×160 | 100×80 | 1.25 | yes | no | bottom-centre | (740, 760) (880, 760) | Personal learning garden plots, Growth Garden (shared) |
 
-## 4. Buildings and landmarks (separate files, transparent)
+## Batch 4: animation layers and wildlife
 
-Each building is one file, drawn at the size shown with its anchor at the bottom centre. Window glow is a separate animated overlay (section 6), so the base file has **dark windows**.
+| ID | File | Px (w×h) | World (w×h) | Aspect | Transparent | Animated | Anchor | Position(s) (world x,y) | Use |
+|---|---|---|---|---|---|---|---|---|---|
+| `waterfall-strip` | `animated/waterfall-strip.webp` | 80×320 | 40×160 | 0.25 | yes | yes: waterfall-flow | centre | (1490, 260) (1150, 570) (400, 600) | Waterfall loop, at three sites (Discovery, Exploration, Game Garden) |
+| `growth-tree-canopy` | `animated/growth-tree-canopy.webp` | 460×320 | 230×160 | 1.438 | yes | yes: growth-canopy-sway | bottom-centre | (800, 600) | Growth tree canopy, separate from the trunk, sways and glows |
+| `beacon-glow` | `animated/beacon-glow.webp` | 120×120 | 60×60 | 1 | yes | yes: beacon-glow | centre | (800, 190) | Compass Tower beacon overlay (pulses) |
+| `globe-glow` | `animated/globe-glow.webp` | 200×200 | 100×100 | 1 | yes | yes: globe-glow | centre | (935, 290) (1190, 140) *est.* | Globe glow overlay, World Map Pavilion and Discovery globe |
+| `window-glow-heartland` | `animated/window-glow-heartland.webp` | 760×620 | 380×310 | 1.226 | yes | yes: window-glow | bottom-centre | (804, 316) *est.* | Window light overlay for TEC Academy (same footprint as the building) |
+| `window-glow-learning-quarter` | `animated/window-glow-learning-quarter.webp` | 1120×640 | 560×320 | 1.75 | yes | yes: window-glow | centre | (400, 220) *est.* | Window light overlay, Learning Quarter buildings (one sheet, same footprint as the island) |
+| `cloud-1` | `wildlife/cloud-1.webp` | 320×150 | 160×75 | 2.133 | yes | yes: cloud-drift | centre | (150, 120) | Cloud, drifts slowly (four variants: cloud-1 to cloud-4) |
+| `cloud-2` | `wildlife/cloud-2.webp` | 320×150 | 160×75 | 2.133 | yes | yes: cloud-drift | centre | (1450, 140) | Cloud, drifts slowly |
+| `cloud-3` | `wildlife/cloud-3.webp` | 320×150 | 160×75 | 2.133 | yes | yes: cloud-drift | centre | (1500, 760) | Cloud, drifts slowly |
+| `cloud-4` | `wildlife/cloud-4.webp` | 320×150 | 160×75 | 2.133 | yes | yes: cloud-drift | centre | (120, 800) | Cloud, drifts slowly |
+| `boat-sail` | `wildlife/boat-sail.webp` | 120×80 | 60×40 | 1.5 | yes | yes: boat-route | centre | (520, 600) | Sailing boat, travels a set route between islands |
+| `boat-fishing` | `wildlife/boat-fishing.webp` | 120×80 | 60×40 | 1.5 | yes | yes: boat-route | centre | (230, 700) | Fishing boat, travels near Game Garden |
+| `boat-ferry` | `wildlife/boat-ferry.webp` | 120×80 | 60×40 | 1.5 | yes | yes: boat-route | centre | (1380, 660) | Ferry, travels near Exploration Valley |
+| `balloon` | `wildlife/balloon.webp` | 120×160 | 60×80 | 0.75 | yes | yes: balloon-drift | centre | (1040, 80) | Hot-air balloon, drifts above Discovery Isles |
+| `gull` | `wildlife/gull.webp` | 48×32 | 24×16 | 1.5 | yes | yes: gull-glide | centre | (1620, 470) (120, 540) | Seagull, glides (small, several copies) |
 
-### Heartland
-| Asset | File | Size (px) | Anchor | Animated | Priority |
-|---|---|---|---|---|---|
-| TEC Academy (main castle) | buildings/tec-academy.webp | 760 × 620 | bottom centre | window glow, flags | 1 |
-| Compass Tower | buildings/compass-tower.webp | 280 × 640 | bottom centre | beacon glow on top, star rotates (code) | 1 |
-| Anis's Home (cottage) | buildings/anis-home.webp | 300 × 240 | bottom centre | window glow | 2 |
-| World Map Pavilion | buildings/world-map-pavilion.webp | 320 × 260 | bottom centre | globe glow (overlay) | 2 |
-| Welcome Plaza fountain | buildings/welcome-plaza-fountain.webp | 220 × 200 | bottom centre | water particles (code) | 2 |
+## Batch 5: decoration and UI
 
-### Learning Quarter: six classroom buildings
-Each must read as its own building and match its subject identity. Sizes are for one building.
+| ID | File | Px (w×h) | World (w×h) | Aspect | Transparent | Animated | Anchor | Position(s) (world x,y) | Use |
+|---|---|---|---|---|---|---|---|---|---|
+| `tree-1-trunk` | `nature/tree-1-trunk.webp` | 160×240 | 80×120 | 0.667 | yes | no | bottom-centre | (400, 300) | Tree type 1 trunk (shared, instanced) |
+| `tree-1-canopy` | `nature/tree-1-canopy.webp` | 160×240 | 80×120 | 0.667 | yes | yes: tree-sway | bottom-centre | (400, 300) | Tree type 1 canopy, sways (separate from trunk) |
+| `tree-2-trunk` | `nature/tree-2-trunk.webp` | 160×240 | 80×120 | 0.667 | yes | no | bottom-centre | (1000, 640) | Tree type 2 trunk (shared) |
+| `tree-2-canopy` | `nature/tree-2-canopy.webp` | 160×240 | 80×120 | 0.667 | yes | yes: tree-sway | bottom-centre | (1000, 640) | Tree type 2 canopy, sways |
+| `tree-3-trunk` | `nature/tree-3-trunk.webp` | 160×240 | 80×120 | 0.667 | yes | no | bottom-centre | (1160, 320) | Tree type 3 trunk (shared) |
+| `tree-3-canopy` | `nature/tree-3-canopy.webp` | 160×240 | 80×120 | 0.667 | yes | yes: tree-sway | bottom-centre | (1160, 320) | Tree type 3 canopy, sways |
+| `tree-4-trunk` | `nature/tree-4-trunk.webp` | 160×240 | 80×120 | 0.667 | yes | no | bottom-centre | (120, 400) | Tree type 4 trunk (shared) |
+| `tree-4-canopy` | `nature/tree-4-canopy.webp` | 160×240 | 80×120 | 0.667 | yes | yes: tree-sway | bottom-centre | (120, 400) | Tree type 4 canopy, sways |
+| `bush-1` | `nature/bush-1.webp` | 120×90 | 60×45 | 1.333 | yes | no | bottom-centre | (600, 380) | Bush (3 variants bush-1 to bush-3, shared) |
+| `flowers-1` | `nature/flowers-1.webp` | 120×60 | 60×30 | 2 | yes | no | bottom-centre | (640, 640) | Flower bed (3 colours, shared) |
+| `lamp-post` | `nature/lamp-post.webp` | 40×120 | 20×60 | 0.333 | yes | yes: lamp-glow | bottom-centre | (720, 395) *est.* | Lamp post along paths (glow is a separate code effect) |
+| `bench` | `nature/bench.webp` | 90×50 | 45×25 | 1.8 | yes | no | bottom-centre | (770, 700) | Bench, plazas (shared) |
+| `compass-rose` | `ui/compass-rose.webp` | 220×220 | 110×110 | 1 | yes | no | centre | (120, 800) | Compass rose, bottom-left corner, fixed to the screen (not the world) |
+| `tec-title-plate` | `ui/tec-title-plate.webp` | 420×150 | 210×75 | 2.8 | yes | no | centre | (150, 70) | TEC title plate, top-left, fixed to the screen |
+| `scroll-banner` | `ui/scroll-banner.webp` | 380×130 | 190×65 | 2.923 | yes | no | centre | (1400, 850) | Scroll banner, bottom-right, fixed to the screen |
 
-| Building | File | Size (px) | Identity cue | Priority |
-|---|---|---|---|---|
-| English Studio | buildings/english-studio.webp | 300 × 260 | warm red-brick, reading bay | 1 |
-| Arabic Classroom | buildings/arabic-classroom.webp | 300 × 280 | gold domes, arches | 1 |
-| Mathematics Workshop | buildings/mathematics-workshop.webp | 300 × 260 | colourful, clock tower | 1 |
-| Computer & Technology Lab | buildings/technology-lab.webp | 300 × 260 | modern, glass panel, antenna | 1 |
-| Tarbiyah & Character House | buildings/tarbiyah-house.webp | 280 × 240 | cottage with garden, heart motif | 1 |
-| World Discovery Centre | buildings/world-discovery-centre.webp | 300 × 280 | observatory dome, globe | 1 |
-| Campus entrance gate | buildings/campus-gate.webp | 260 × 200 | arch gate at the Knowledge Bridge end | 2 |
+## Island layout (world units)
 
-### Discovery Isles
-| Asset | File | Size (px) | Animated | Priority |
-|---|---|---|---|---|
-| Globe observatory (central landmark) | buildings/discovery-globe.webp | 420 × 380 | globe glow (overlay) | 2 |
-| Cluster pavilions (6, one per cluster; can share a base with different signs) | buildings/cluster-pavilion-a.webp, -b.webp | 180 × 160 each | none | 3 |
-
-Six geographical clusters: Living Worlds, Science & Making, Places & Civilisations, Creative Worlds, Movement & Machines, Imagination & Strategy. Each cluster gets a plate (ui) and a marker; the pavilions above can be shared.
-
-### Game Garden
-| Asset | File | Size (px) | Animated | Priority |
-|---|---|---|---|---|
-| Giant chess courtyard (board and pieces) | buildings/chess-courtyard.webp | 460 × 340 | none | 2 |
-| Puzzle Pavilion | buildings/puzzle-pavilion.webp | 240 × 240 | none | 2 |
-| Matching Games Garden (flower beds with cards motif) | buildings/matching-garden.webp | 260 × 180 | flower sway | 3 |
-| Building-Block Workshop (giant cube and blocks) | buildings/block-workshop.webp | 280 × 260 | none | 2 |
-| Story and Memory Games Area (storyteller hall) | buildings/story-area.webp | 260 × 240 | lantern glow | 3 |
-
-### Exploration Valley
-| Asset | File | Size (px) | Animated | Priority |
-|---|---|---|---|---|
-| Botanical Gardens (glasshouse dome) | buildings/botanical-glasshouse.webp | 360 × 280 | interior glow | 2 |
-| Animal Observation Area (fenced enclosure) | buildings/animal-area.webp | 300 × 220 | none (animals: separate, optional) | 3 |
-| Water and Weather Station (tower with vane) | buildings/weather-station.webp | 200 × 300 | vane rotates (code) | 2 |
-| Nature Trails (trail head sign) | buildings/trail-head.webp | 160 × 160 | none | 3 |
-| Miniature Geography Landscape (diorama) | buildings/miniature-landscape.webp | 300 × 220 | none | 3 |
-| Outdoor Observation Pavilion (gazebo with telescope) | buildings/observation-pavilion.webp | 220 × 220 | none | 2 |
-
-### Growth Garden
-| Asset | File | Size (px) | Animated | Priority |
-|---|---|---|---|---|
-| Great growth tree (central landmark) | buildings/growth-tree.webp | 460 × 480 | blossom glow (overlay), leaves sway | 1 |
-| Personal learning garden (plot set) | nature/plot-set.webp (shared) | 200 × 160 | none | 3 |
-| Kindness element (bench with heart stones) | buildings/kindness-bench.webp | 200 × 140 | none | 3 |
-| Achievement lanterns (lantern cluster, no marks) | buildings/growth-lanterns.webp | 160 × 200 | lantern glow | 3 |
-
-## 5. Bridges and paths
-
-Bridges are artwork pieces, placed along a path line by code. Each bridge file is a **single span** that code can stretch or repeat.
-
-| Asset | File | Size (px) | Notes | Priority |
-|---|---|---|---|---|
-| Knowledge Bridge (arched stone span) | bridges/knowledge-bridge.webp | 480 × 200 | end caps on both sides, transparent | 1 |
-| Curiosity Bridge (arched span) | bridges/curiosity-bridge.webp | 480 × 200 | slightly different colour from Knowledge | 1 |
-| Play Bridge (wooden/colourful span) | bridges/play-bridge.webp | 440 × 200 | | 1 |
-| Wonder Bridge (rope and wood suspension span) | bridges/wonder-bridge.webp | 480 × 220 | sags in the middle | 1 |
-| Growth Walk stone path segment | paths/growth-walk-segment.webp | 200 × 120 | tileable along the walk | 1 |
-| Growth Walk end landing | paths/growth-walk-end.webp | 240 × 160 | | 2 |
-| Path tile (campus, Learning Quarter) | paths/campus-path-tile.webp | 128 × 128 | seamless, tileable | 2 |
-
-## 6. Animated layers (provided separately so they move independently)
-
-Each animated element is its own layer with transparency. The base building is never animated.
-
-| Element | File(s) | Size | Motion (code) | Notes |
-|---|---|---|---|---|
-| Ocean | ocean/ocean-tile.webp | 512 × 512, seamless | slow offset drift | one tile reused everywhere |
-| Shoreline foam | ocean/foam-edge.webp | 256 × 64, tileable | gentle pulse | sits on island coastlines |
-| Waterfalls (×3) | animated/waterfall-strip.webp | 80 × 320, vertical loop | flows downward | at least 3 waterfall sites (Discovery, Game, Exploration) |
-| Window glow overlay | animated/window-glow-*.webp | matched to building | flicker or soft fade | one overlay per building that has windows |
-| Compass Tower beacon | animated/beacon-glow.webp | 120 × 120 | pulse | |
-| Globe glow (Discovery, World Map Pavilion) | animated/globe-glow.webp | 200 × 200 | soft pulse | |
-| Growth tree canopy | animated/growth-tree-canopy.webp | 460 × 320 | sway, glow | canopy must be a **separate file** from the trunk |
-| Tree canopies (shared) | nature/tree-canopy-*.webp | matched | sway (rotation about base) | trunk and canopy separate for every tree |
-| Clouds (×4 variants) | wildlife/cloud-*.webp | 320 × 150 | slow drift | |
-| Boats (×3) | wildlife/boat-sail.webp, boat-fishing.webp, boat-ferry.webp | 120 × 80 | travel along set routes | |
-| Hot-air balloon | wildlife/balloon.webp | 120 × 160 | slow drift | |
-| Seagulls | wildlife/gull.webp | 48 × 32 | glide | |
-
-## 7. Shared assets
-
-| Asset | File | Size (px) | Used on |
+| Island | Terrain centre | Terrain world size | Relative to Heartland |
 |---|---|---|---|
-| Trees (4 types, each with trunk and canopy files) | nature/tree-*-trunk.webp, tree-*-canopy.webp | 160 × 240 | all islands |
-| Bushes (3 types) | nature/bush-*.webp | 120 × 90 | all islands |
-| Flower beds (3 colours) | nature/flowers-*.webp | 120 × 60 | all islands |
-| Rocks and islets (4–6 variants) | nature/islet-*.webp | 200 × 120 | ocean (smaller islets) |
-| Lamp post | nature/lamp-post.webp | 40 × 120 | paths |
-| Bench | nature/bench.webp | 90 × 50 | plazas |
-| Mountain range (backdrop) | nature/mountains-backdrop.webp | 1800 × 360 | horizon, behind islands |
-| Compass rose | ui/compass-rose.webp | 220 × 220 | corner |
-| Title plate (TEC logo) | ui/tec-title-plate.webp | 420 × 150 | top left |
-| Scroll banner | ui/scroll-banner.webp | 380 × 130 | bottom right |
+| Heartland | (800, 330) | 380 × 300 | centre |
+| Learning Quarter | (400, 220) | 560 × 320 | top left |
+| Discovery Isles | (1235, 220) | 520 × 320 | top right |
+| Game Garden | (280, 515) | 520 × 330 | left |
+| Exploration Valley | (1280, 515) | 560 × 340 | right |
+| Growth Garden | (800, 745) | 520 × 280 | south |
 
-Labels, name plates and description cards are **code** (text and styling), not artwork. The plates behind labels may be a shared artwork.
+Bridges: each bridge is drawn as one span between its two given points. Code stretches the span along that line and keeps its ends undistorted. For bridges, the two listed points are the span ends.
 
-## 8. Format, quality and budget
+## Placeholders
 
-- **Format:** WebP with alpha for everything. Provide the source PNG too if available, so files can be re-exported.
-- **Scale:** 2× the world size, as in section 1. Maximum long edge 2048 px.
-- **Transparency:** soft, real alpha edges. No baked drop shadows (shadows are separate files). No background colour.
-- **Consistency:** one palette and one lighting direction (light from the upper left) across all files. The master map sets the palette.
-- **Size budget:** islands ≤ 600 KB each; buildings ≤ 300 KB each; shared nature assets ≤ 60 KB each; ocean tile ≤ 150 KB. Total world load target ≤ 8 MB, with lazy loading for destinations not yet visible.
-- **People:** no real people or identifiable faces in any world asset.
-- **Naming:** lower-case, hyphens only. The file name is the id used in code. Replacing an asset means replacing the file with the same name, with no code change.
+Until a file exists, the renderer draws a dashed outline at the asset's footprint and position, labelled with the asset id. Placeholders are listed here so they are never mistaken for artwork.
 
-## 9. Animation rules (for artwork)
+## Open items before Phase B
 
-- Anything that moves is a separate file (canopy, glow, waterfall strip, boat, cloud).
-- Trees: trunk and canopy separate, canopy anchored at the trunk top.
-- Glows: separate overlay with the same footprint as the building, so it lines up exactly.
-- Waterfall strips: seamless vertical loops, 80 px wide.
-
-## 10. Delivery order (what artwork is needed first)
-
-**Batch 1: needed for the Phase B overview (the six islands, bridges and the central landmark)**
-1. Terrain files: heartland, learning-quarter, discovery-isles, game-garden, exploration-valley, growth-garden (section 3).
-2. Shadows for the same six islands.
-3. Ocean tile (ocean/ocean-tile.webp) and foam edge.
-4. Buildings: tec-academy, compass-tower, anis-home, world-map-pavilion.
-5. Bridges: knowledge-bridge, curiosity-bridge, play-bridge, wonder-bridge.
-6. Growth Walk: growth-walk-segment, growth-walk-end.
-7. Growth tree: growth-tree.webp.
-8. Islets (2–3 variants), and mountains-backdrop.
-
-**Batch 2: Learning Quarter detail (Phase E)**
-9. The six classroom buildings and the campus gate.
-10. Campus path tile.
-
-**Batch 3: other island landmarks (Phase F, with placeholder allowed)**
-11. discovery-globe, cluster pavilions.
-12. chess-courtyard, puzzle-pavilion, block-workshop, matching-garden, story-area.
-13. botanical-glasshouse, weather-station, observation-pavilion, animal-area, trail-head, miniature-landscape.
-14. growth-lanterns, kindness-bench, plot-set.
-
-**Batch 4: animation layers and wildlife (Phase C)**
-15. Window-glow overlays (one per building with windows), beacon glow, globe glow, growth tree canopy.
-16. Waterfall strip, tree canopies (shared), clouds, boats, balloon, gulls.
-
-**Batch 5: decoration and UI**
-17. Shared nature assets, lamp post, bench, flower beds, bushes.
-18. TEC title plate, compass rose, scroll banner.
-
-## 11. Placeholders until artwork arrives
-
-Until an asset is supplied, the world shows a **clearly marked placeholder**: a dashed outline in the right footprint with the asset id as its label. Placeholders are never presented as final artwork. The asset manifest lists each placeholder.
-
-## 12. Status (to update as assets arrive)
-
-| Batch | Status |
-|---|---|
-| 1: overview | awaiting artwork |
-| 2: Learning Quarter detail | awaiting artwork |
-| 3: other landmarks | awaiting artwork |
-| 4: animation and wildlife | awaiting artwork |
-| 5: decoration and UI | awaiting artwork |
+1. Confirm the island centres and footprints against the master map.
+2. Confirm the estimated building positions (marked *est.*) on each island.
+3. Decide whether `islet-3` is needed (it can be replaced by islet-1 or islet-2).
+4. Confirm the wildlife routes (boats, balloon, gulls) with the artist.
