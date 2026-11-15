@@ -20,7 +20,8 @@ TEC.router = (function(){
       TEC.views[r.name](app, r.arg);
       app.classList.remove('switching');
       window.scrollTo(0, 0);
-      document.title = (r.name === 'onboard' ? 'Welcome' : r.name === 'home' ? 'My School' : r.name === 'teacher' ? 'My Teacher' : 'My Details') + ' · TEC Level 1';
+      var titles = { onboard:'Welcome', home:'My School', teacher:'My Teacher', profile:'My Details', district:'Classroom District', class:'Classroom' };
+      document.title = (titles[r.name] || 'TEC') + ' · TEC Level 1';
     }, 180);
   }
   function start(){

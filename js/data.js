@@ -56,3 +56,14 @@ TEC.portrait = function(t){
          '<text x="100" y="186" text-anchor="middle" font-size="18" font-family="Trebuchet MS,sans-serif" fill="' + t.color + '">' + initial + '</text>' +
          '</svg>';
 };
+
+/* Classroom District: six rooms. `ready` = built in this stage. World Discovery has no confirmed teacher. */
+TEC.classrooms = [
+  { key:'english', title:'English Studio',          subject:'English',               teacher:'english', color:'#2F80ED', symbol:'Aa', ready:true },
+  { key:'arabic',  title:'Arabic Garden',           subject:'Arabic',                teacher:'arabic',  color:'#E5484D', symbol:'ع',  ready:false },
+  { key:'maths',   title:'Mathematics Workshop',    subject:'Mathematics',           teacher:'maths',   color:'#F5761A', symbol:'123', ready:false },
+  { key:'tech',    title:'Technology Laboratory',   subject:'Computer & Technology', teacher:'tech',    color:'#8E6CEF', symbol:'⚙',  ready:false },
+  { key:'char',    title:'Tarbiyah Garden',         subject:'Tarbiyah & Character',  teacher:'char',    color:'#2BA56B', symbol:'♥',  ready:false },
+  { key:'world',   title:'World Explorer Studio',   subject:'World Discovery',       teacher:null,      color:'#F7B500', symbol:'◎',  ready:false }
+];
+TEC.classroomByKey = function(k){ return TEC.classrooms.find(function(c){ return c.key === k; }); };

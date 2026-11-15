@@ -29,3 +29,22 @@ Status key: **Supplied** = provided and in use · **Placeholder** = temporary, r
 - Teacher names, subjects, intro lines, photos and colours: `js/data.js` → `TEC.teachers`.
 - Interests: `js/data.js` → `TEC.likes`.
 - Weekly routine and day types: `js/data.js` → `TEC.week`, `TEC.dayTypes`.
+
+## Stage 3 additions
+
+| Asset | Path | Status | Used in |
+|---|---|---|---|
+| Mr. David portrait | assets/teachers/english.jpg | Supplied | English Studio (front of room) |
+| Mr. Umar portrait | assets/teachers/arabic.jpg | Supplied, room not built yet | Arabic Garden (later) |
+| Mr. Muhammad portrait | assets/teachers/maths.png | Supplied, room not built yet | Mathematics Workshop (later) |
+| Mr. Abdul Hadi portrait | assets/teachers/tarbiyah.jpg | Supplied, room not built yet | Tarbiyah Garden (later) |
+| Mr. Jensen | placeholder disc (generated in code) | PLACEHOLDER, not a final portrait | Technology Laboratory (later) |
+| World Discovery teacher | none | NOT CONFIRMED | World Explorer Studio (later) |
+| Anis | assets/anis.jpg | Supplied | Anis panel, every classroom |
+| English Studio scene | drawn in SVG in js/rooms/english.js | Original placeholder art, replaceable | English Studio walls, floor, board, desks |
+| Other five room scenes | none | Not built | Later stage |
+| Door signs | text and symbols in js/data.js | Placeholder | Classroom District |
+
+Replacing a teacher portrait: put the new file in assets/teachers/ and change `img` in js/data.js.
+Replacing the English room art: edit the `scene()` function in js/rooms/english.js.
+Teacher assignments and room titles are configured in `TEC.classrooms` (js/data.js).

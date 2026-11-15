@@ -25,6 +25,11 @@ TEC.views.home = function(app){
           return '<div class="' + cls.trim() + '" aria-current="' + (d.key === today) + '">' + d.label + '<small>' + sub + '</small></div>';
         }).join('') + '</div>' +
       '</section>' +
+      '<section class="card" aria-labelledby="h-rooms">' +
+        '<h2 id="h-rooms">My classrooms</h2>' +
+        '<p class="today-text">Walk down the corridor and choose a room.</p>' +
+        '<div class="chips"><a class="chip-btn" href="#/district">🏫 Open Classroom District</a></div>' +
+      '</section>' +
       '<section class="card wide" aria-labelledby="h-teachers">' +
         '<h2 id="h-teachers">My teachers</h2>' +
         '<nav class="teachers" aria-label="Teachers">' + TEC.teacherOrder.map(function(k){

@@ -138,3 +138,67 @@ a{color:inherit}
   .ages{gap:10px}
   .age{width:88px;height:88px;font-size:36px}
 }
+
+/* ---------- Stage 3: Classroom District and classrooms ---------- */
+.district-top{margin-bottom:8px}
+.district-sub{color:var(--muted);margin:-4px 0 16px}
+.corridor{background:linear-gradient(180deg,#FFF6DF 0%,#FFE7B3 55%,#F2CF8B 100%);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+[data-theme="dark"] .corridor{background:linear-gradient(180deg,#2A2418 0%,#3A2E1C 55%,#4A3A22 100%)}
+.corridor .doors{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+.corridor .door{position:relative;text-decoration:none;color:#fff;background:var(--door);border-radius:14px 14px 6px 6px;border:6px solid #8A5A2B;border-bottom:none;padding:18px 14px 16px;min-height:200px;box-shadow:0 6px 0 rgba(0,0,0,.12);transition:transform .15s}
+.corridor a.door:hover,.corridor a.door:focus-visible{transform:translateY(-3px)}
+.corridor .door.is-later{opacity:.85;cursor:default;background:var(--door);filter:brightness(.92)}
+.corridor .door b{color:#fff;font-size:18px;line-height:1.2}
+.corridor .door small{color:rgba(255,255,255,.92)}
+.corridor .door em{font-style:normal;font-size:13px;color:rgba(255,255,255,.95);margin-top:auto}
+.door-sign{font-size:30px;font-weight:800;background:rgba(255,255,255,.2);border-radius:12px;width:56px;height:56px;display:grid;place-items:center;margin-bottom:6px}
+.later{margin-top:8px;align-self:flex-start;background:rgba(0,0,0,.3);border-radius:10px;padding:4px 8px;font-size:12px}
+
+.room-nav{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;justify-content:space-between;margin-bottom:12px}
+.room-pill{color:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:15px}
+.stage{position:relative;container-type:inline-size;aspect-ratio:16/9;width:100%;max-width:1000px;margin:0 auto;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);background:#FFFBEF}
+.stage .scene,.stage .scene svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hotspots{position:absolute;inset:0}
+.hotspot{position:absolute;transform:translate(-50%,-50%);width:6.5cqw;height:6.5cqw;min-width:40px;min-height:40px;max-width:76px;max-height:76px;border-radius:50%;border:3px solid #fff;background:rgba(255,216,102,.9);box-shadow:0 0 0 4px rgba(0,0,0,.12);cursor:pointer;display:grid;place-items:center;padding:0}
+.hotspot::before{content:"";width:40%;height:40%;border-radius:50%;background:var(--orange-deep,#E8610E)}
+.hotspot span{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;background:#fff;color:#2b2b2b;border-radius:8px;padding:3px 8px;font-size:clamp(11px,1.6cqw,14px);box-shadow:var(--shadow)}
+.hotspot:focus-visible,.board:focus-visible,.desk-tile:focus-visible{outline:3px solid var(--blue,#2F80ED);outline-offset:3px}
+
+.board{position:absolute;left:35%;top:23.5%;width:28%;height:27%;cursor:pointer;background:#2E4A3B;border-radius:4px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8cqw;padding:1.5cqw;text-align:center;overflow:hidden;font-family:inherit}
+.board-no{display:none;font-size:clamp(10px,1.5cqw,13px);opacity:.85}
+.board-letter{font-size:clamp(22px,5.6cqw,48px);font-weight:800;line-height:1;letter-spacing:.02em}
+.board-pic{font-size:clamp(18px,3.6cqw,30px);line-height:1}
+.board-word{font-size:clamp(13px,2.4cqw,20px);font-weight:700}
+
+
+
+.room-teacher{position:absolute;left:43%;bottom:4%;width:14%;text-align:center;pointer-events:none}
+.room-teacher img,.room-teacher .placeholder{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:14px;display:block;box-shadow:var(--shadow)}
+.room-teacher span{display:inline-block;margin-top:4px;background:#fff;color:#2b2b2b;border-radius:8px;padding:2px 8px;font-size:clamp(10px,1.5cqw,13px);font-weight:700}
+
+.room-desk{margin-top:16px;display:grid;gap:14px}
+.room-say{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:var(--r);padding:12px;box-shadow:var(--shadow)}
+.room-say img{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:none}
+.room-say p{margin:0;font-size:17px;line-height:1.4}
+.desk-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.desk-tile{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;min-height:110px}
+.desk-tile span{font-size:40px;line-height:1}
+.desk-tile b{font-size:16px}
+.desk-tile.is-ok{border-color:var(--green,#2BA56B);background:#E9F8EF}
+[data-theme="dark"] .desk-tile.is-ok{background:#1D3A2B}
+
+.room-dlg{border:none;border-radius:var(--r);padding:20px;max-width:min(92vw,520px);background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.room-dlg::backdrop{background:rgba(0,0,0,.4)}
+.room-dlg h2{font-size:20px;margin-bottom:12px}
+.dlg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.dlg-item{border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:12px 6px;cursor:pointer;font:inherit;display:flex;flex-direction:column;align-items:center;gap:4px}
+.dlg-item span{font-size:34px}
+.dlg-close{margin-top:14px}
+
+@media (max-width:520px){
+  .stage{aspect-ratio:4/3}
+  .room-teacher{left:41%;width:18%}
+  .room-say{align-items:flex-start}
+}
+.room-teacher svg{width:100%;height:auto;border-radius:14px;box-shadow:var(--shadow)}
+.board-tap{font-size:clamp(10px,1.5cqw,13px);opacity:.85}
