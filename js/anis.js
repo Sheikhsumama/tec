@@ -14,19 +14,21 @@ TEC.anis = (function(){
     } catch (e) { /* speech unavailable */ }
   }
   /* Types text into an element and speaks it. A newer call cancels an older one. */
+  function faces(on){ document.querySelectorAll('.anis-big,.anis-face').forEach(function(f){ f.classList.toggle('talking', on); }); }
   function say(el, text, after){
     if (!el) return;
     var my = ++token;
     el.textContent = '';
     speak(text);
+    faces(true);
     var i = 0;
     var timer = setInterval(function(){
-      if (my !== token) { clearInterval(timer); return; }
+      if (my !== token) { clearInterval(timer); faces(false); return; }
       el.textContent = text.slice(0, ++i);
-      if (i >= text.length) { clearInterval(timer); if (after) setTimeout(after, 250); }
+      if (i >= text.length) { clearInterval(timer); faces(false); if (after) setTimeout(after, 250); }
     }, 30);
   }
-  function cancel(){ token++; try { speechSynthesis.cancel(); } catch (e) {} }
+  function cancel(){ token++; faces(false); try { speechSynthesis.cancel(); } catch (e) {} }
   return { img: img, say: say, speak: speak, cancel: cancel };
 })();
 
