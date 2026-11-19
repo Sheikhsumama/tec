@@ -410,8 +410,8 @@ a{color:inherit}
 @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .m-bubble.swap,.m-board.swap,.m-board svg.swap{animation:swapIn .5s cubic-bezier(.2,.8,.2,1) both}
 .m-board.swap svg{animation:swapIn .5s cubic-bezier(.2,.8,.2,1) both}
-.m-board .m-obj{transform-box:fill-box;transform-origin:center;animation:popIn .45s cubic-bezier(.2,.9,.3,1.2) both}
-.m-board .m-obj.is-on{animation:pulseOn .5s ease both}
+.m-board .m-in{transform-box:fill-box;transform-origin:center;animation:popIn .45s cubic-bezier(.2,.9,.3,1.2) both}
+.m-board .m-obj.is-on .m-in{animation:pulseOn .5s ease both}
 .m-board .m-star{transform-box:fill-box;transform-origin:center;animation:starBounce .8s cubic-bezier(.2,.9,.3,1.3) both}
 .m-ask input.shake,.m-board.shake{animation:shake .45s ease}
 #m-next,#m-check,#m-finish{transition:transform .15s,box-shadow .15s}
@@ -430,6 +430,9 @@ a{color:inherit}
 :root[data-theme="dark"] .say{color:#F4F6FB}
 :root[data-theme="dark"] .anis-body .say{background:#1B1F2E}
 @media (prefers-reduced-motion: reduce){
-  .m-bubble.swap,.m-board.swap,.m-board svg.swap,.m-board .m-obj,.m-board .m-obj.is-on,.m-board .m-star,.m-ask input.shake,.m-board.shake,.m-confetti{animation:none!important}
+  .m-bubble.swap,.m-board.swap,.m-board svg.swap,.m-board .m-in,.m-board .m-obj.is-on .m-in,.m-board .m-star,.m-ask input.shake,.m-board.shake,.m-confetti{animation:none!important}
   .m-confetti{display:none}
 }
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.m-board.swap{animation:fadeIn .4s ease both}
+.m-board.swap svg{animation:none}

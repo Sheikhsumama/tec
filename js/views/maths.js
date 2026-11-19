@@ -10,7 +10,7 @@ TEC.mathDraw = (function(){
   var ob = 'M0,-14 C10,-24 30,-18 28,4 C26,26 12,30 0,22 C-12,30 -26,26 -28,4 C-30,-18 -10,-24 0,-14 Z';
   function wrap(id, hl, inner, x, y, s){
     return '<g class="m-obj' + (hl ? ' is-on' : '') + '"' + (id ? ' data-id="' + id + '"' : '') +
-      ' transform="translate(' + x + ',' + y + ') scale(' + (s || 1) + ')">' + inner + '</g>';
+      ' transform="translate(' + x + ',' + y + ') scale(' + (s || 1) + ')"><g class="m-in">' + inner + '</g></g>';
   }
   var kinds = {
     apple: function(){ return '<path d="' + ob + '" fill="#E5484D"/><path d="M0,-14 q2,-14 9,-18" stroke="#6B4A2B" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="14" cy="-27" rx="11" ry="6" fill="#2BA56B" transform="rotate(-20 14 -27)"/>'; },
