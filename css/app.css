@@ -316,3 +316,120 @@ a{color:inherit}
 }
 .big-btn{text-decoration:none;display:inline-block}
 .dash .tg{margin-top:4px}
+
+/* ---------- Level 1 home: one fixed screen (desktop), teacher cards, single Tarbiyah panel ---------- */
+.age-in{width:220px;height:110px;border-radius:30px;border:0;background:var(--card);font-size:44px;font-weight:700;color:var(--orange);text-align:center;box-shadow:var(--shadow);font-family:inherit}
+.age-in:focus{outline:3px solid var(--orange)}
+@media (min-width:1100px){
+  body:has(.dash){overflow:hidden}
+  .dash{height:calc(100vh - 76px);min-height:620px;align-items:stretch}
+  .dash-main{grid-template-rows:auto auto minmax(0,1fr) auto;min-height:0}
+  .mid-row{min-height:0}
+  .mid-row .dcard{display:flex;flex-direction:column;justify-content:center}
+  .ring-wrap{width:clamp(150px,22vh,190px);height:clamp(150px,22vh,190px)}
+}
+.dash-side{grid-template-rows:auto auto auto;align-content:start}
+.tarb-card{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);transition:transform .25s,box-shadow .25s}
+.tarb-card:hover{transform:translateY(-3px)}
+.tarb-av{width:76px;height:76px;flex:0 0 76px;border-radius:50%;overflow:hidden;display:block;border:3px solid var(--green)}
+.tarb-av img,.tarb-av svg{width:100%;height:100%;object-fit:cover;display:block}
+.tarb-card small{display:block;color:var(--muted);font-size:13px}
+.tarb-card b{display:block;font-size:16px}
+.dash .class-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.dash .class-card{border-top:6px solid var(--c);padding-top:0}
+.class-card .tc-av{width:100%;aspect-ratio:4/3;display:block;overflow:hidden;background:var(--bg)}
+.class-card .tc-av img,.class-card .tc-av svg{width:100%;height:100%;object-fit:cover;display:block}
+.class-card em.tbc{color:var(--orange-deep);font-weight:700}
+.class-card b{margin-top:8px}
+.class-card .cc-go{margin:6px 14px 0;font-size:13px;font-weight:700;color:var(--orange)}
+@media (max-width:1100px){ .dash .class-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:520px){ .dash .class-grid{grid-template-columns:1fr 1fr} }
+
+/* ---------- Mathematics lesson page ---------- */
+.room-dots{display:flex;gap:6px}
+.m-dot{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
+.m-dot.done{background:var(--green)}
+.m-dot.now{background:var(--orange);transform:scale(1.3)}
+.m-lesson{max-width:1000px;margin:0 auto;display:grid;gap:14px}
+.m-teacher{display:flex;align-items:center;gap:16px}
+.m-av{width:112px;height:112px;flex:0 0 112px;border-radius:50%;overflow:hidden;border:4px solid var(--card);box-shadow:var(--shadow);display:block;background:var(--card)}
+.m-av img,.m-av svg{width:100%;height:100%;object-fit:cover;display:block}
+.m-bubble{background:var(--card);border-radius:22px;padding:14px 20px;box-shadow:var(--shadow);flex:1;min-width:0}
+.m-bubble b{font-size:14px;color:var(--orange)}
+.m-bubble p{margin:4px 0 0;font-size:clamp(17px,2.4vw,22px);line-height:1.35;color:var(--ink)}
+.m-board{background:#FBFCF8;border:14px solid #B7793B;border-radius:18px;box-shadow:0 10px 0 rgba(31,42,68,.08);padding:8px;min-height:260px}
+.m-board svg{width:100%;height:auto;display:block}
+.m-board [data-id]{cursor:pointer}
+.m-board .m-obj.is-on{filter:drop-shadow(0 0 6px #F5761A) drop-shadow(0 0 2px #F5761A)}
+.m-answer{display:flex;flex-direction:column;align-items:center;gap:10px;min-height:70px}
+.m-ask{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
+.m-ask input{width:140px;height:64px;border-radius:20px;border:0;background:var(--card);font-size:32px;font-weight:700;text-align:center;color:var(--orange);box-shadow:var(--shadow);font-family:inherit}
+.m-ask input:focus{outline:3px solid var(--orange)}
+.m-hint{margin:0;min-height:1.4em;font-size:17px;color:var(--muted);text-align:center}
+.m-outline{max-width:1000px;margin:0 auto 24px}
+.m-strand{margin-top:12px}
+.m-strand h3{font-size:15px;margin:0 0 8px;color:var(--ink)}
+.m-topics-row{display:flex;flex-wrap:wrap;gap:8px}
+.m-topic,.m-topic.is-later{font-size:14px;padding:8px 12px;border-radius:14px;border:0;font-family:inherit}
+.m-topic{background:var(--orange-soft);color:var(--ink);cursor:pointer;font-weight:700}
+.m-topic.on,.m-topic:hover{background:var(--orange);color:#fff}
+.m-topic.is-later{background:var(--line);color:var(--muted)}
+
+/* Fit the Level 1 home on one screen (desktop) */
+@media (min-width:1100px){
+  .dash{gap:14px}
+  .dash-main{gap:14px}
+  .dash-head .greet{font-size:clamp(26px,3.6vh,34px)}
+  .dash-head .eyebrow{margin-bottom:2px}
+  .dash-head .dateline{margin:2px 0 0}
+  .stat-row .stat{padding:12px 16px}
+  .stat-n{font-size:clamp(26px,3.6vh,32px)}
+  .dash .class-card .tc-av{height:112px;aspect-ratio:auto}
+  .dash .class-card .tc-av img,.dash .class-card .tc-av svg{object-position:center 20%}
+  .dash .class-grid{gap:12px}
+  .dash .class-card b{margin-top:6px}
+  .dash .sec-head{margin-bottom:8px}
+  .ring-wrap{width:clamp(130px,19vh,168px);height:clamp(130px,19vh,168px)}
+  .today-card h2{font-size:clamp(18px,2.6vh,22px)}
+}
+@media (min-width:1100px){
+  .dash .class-card .tc-av{height:clamp(78px,12.5vh,104px)}
+  .dash .class-card .cc-go{margin-top:2px}
+  .dash .class-card{padding-bottom:10px}
+  .dash .sec-head h2{font-size:17px}
+}
+@media (min-width:1100px){ .dash{height:calc(100vh - 96px)} }
+
+/* ---------- Lesson motion: calm, purposeful, and off for reduced motion ---------- */
+@keyframes swapIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes popIn{0%{opacity:0;transform:scale(.4)}70%{opacity:1;transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+@keyframes confettiFall{0%{transform:translateY(-10vh) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(540deg);opacity:0}}
+@keyframes starBounce{0%{transform:scale(0) rotate(-30deg)}60%{transform:scale(1.25) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes pulseOn{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.m-bubble.swap,.m-board.swap,.m-board svg.swap{animation:swapIn .5s cubic-bezier(.2,.8,.2,1) both}
+.m-board.swap svg{animation:swapIn .5s cubic-bezier(.2,.8,.2,1) both}
+.m-board .m-obj{transform-box:fill-box;transform-origin:center;animation:popIn .45s cubic-bezier(.2,.9,.3,1.2) both}
+.m-board .m-obj.is-on{animation:pulseOn .5s ease both}
+.m-board .m-star{transform-box:fill-box;transform-origin:center;animation:starBounce .8s cubic-bezier(.2,.9,.3,1.3) both}
+.m-ask input.shake,.m-board.shake{animation:shake .45s ease}
+#m-next,#m-check,#m-finish{transition:transform .15s,box-shadow .15s}
+#m-next:hover,#m-check:hover,#m-finish:hover{transform:translateY(-2px)}
+#m-next:active,#m-check:active,#m-finish:active{transform:translateY(3px)}
+.m-hint{transition:opacity .3s}
+.m-confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+.m-confetti i{position:absolute;top:0;width:10px;height:14px;border-radius:3px;opacity:0;animation:confettiFall linear both}
+.m-lesson{position:relative}
+.m-topic{transition:background .2s,transform .2s,color .2s}
+.m-topic:hover{transform:translateY(-2px)}
+/* Speech text: always readable in both themes */
+.m-bubble,.say,.room-say{color:var(--ink)}
+.m-bubble p,.say{color:#1F2A44}
+:root:not([data-theme="light"]) .m-bubble p,:root[data-theme="dark"] .m-bubble p{color:#F4F6FB}
+:root[data-theme="dark"] .say{color:#F4F6FB}
+:root[data-theme="dark"] .anis-body .say{background:#1B1F2E}
+@media (prefers-reduced-motion: reduce){
+  .m-bubble.swap,.m-board.swap,.m-board svg.swap,.m-board .m-obj,.m-board .m-obj.is-on,.m-board .m-star,.m-ask input.shake,.m-board.shake,.m-confetti{animation:none!important}
+  .m-confetti{display:none}
+}

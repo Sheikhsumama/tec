@@ -11,7 +11,7 @@ TEC.views.onboard = function(app){
         '<button class="big-btn" id="ob-name-next" disabled>Next</button>' +
       '</div>' +
       '<div class="step hidden" id="ob-age">' +
-        '<div class="ages">' + [2,3,4].map(function(a){ return '<button class="age" type="button" data-age="' + a + '" aria-label="Age ' + a + '">' + a + '</button>'; }).join('') + '</div>' +
+        '<input class="age-in" id="ob-age-in" type="number" inputmode="numeric" min="1" max="99" placeholder="Age" aria-label="Your age" value="' + (s.age || '') + '">' +
         '<button class="big-btn" id="ob-age-next" disabled>Next</button>' +
       '</div>' +
       '<div class="step hidden" id="ob-likes">' +
@@ -35,15 +35,14 @@ TEC.views.onboard = function(app){
   };
 
   var ageNext = document.getElementById('ob-age-next');
-  app.querySelectorAll('.age').forEach(function(b){
-    b.onclick = function(){
-      app.querySelectorAll('.age').forEach(function(x){ x.classList.remove('on'); });
-      b.classList.add('on');
-      TEC.setState({ age: +b.dataset.age });
-      ageNext.disabled = false;
-    };
-  });
+  var ageIn = document.getElementById('ob-age-in');
+  function validAge(){ var n = parseInt(ageIn.value, 10); return n >= 1 && n <= 99 ? n : null; }
+  ageIn.oninput = function(){ ageNext.disabled = validAge() === null; };
+  if (s.age) ageNext.disabled = false;
   ageNext.onclick = function(){
+    var n = validAge();
+    if (n === null) return;
+    TEC.setState({ age: n });
     show('ob-age', false);
     TEC.anis.say(say, 'What do you like? Tap everything you love.', function(){ showLikes(); show('ob-likes', true); });
   };
